@@ -9,3 +9,4 @@ docent.env
 docent.env.*
 .mcp.local.json
 .DS_Store
+data/
