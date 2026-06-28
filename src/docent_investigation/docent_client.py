@@ -55,6 +55,17 @@ class DocentClientAdapter:
     def read_run_state(self, collection_id: str, rubric_id: str) -> dict:
         return self._client.get_rubric_run_state(collection_id, rubric_id)
 
+    def get_run_metadata(self, collection_id: str, agent_run_id: str) -> dict:
+        run = self._client.get_agent_run(collection_id, agent_run_id)
+        meta = getattr(run, "metadata", None)
+        if meta is None and isinstance(run, dict):
+            meta = run.get("metadata")
+        return meta or {}
+
+    def list_rubric_ids(self, collection_id: str) -> list[str]:
+        rubrics = self._client.list_rubrics(collection_id) or []
+        return [r["id"] if isinstance(r, dict) else getattr(r, "id") for r in rubrics]
+
     def collection_url(self, collection_id: str) -> str:
         return f"{self.frontend_url}/dashboard/{collection_id}"
 
