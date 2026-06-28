@@ -3,15 +3,21 @@
 A Claude Code plugin marketplace whose `docent-investigation` plugin ships an **`investigation`** skill:
 it drives a complete, honest behavioral investigation on [Docent](https://docs.transluce.org) — ingest
 real agent runs → author + evaluate a rubric for a failure mode via the Docent SDK → measure
-flag-frequency → anchor against a ground-truth oracle → report honestly (including nulls).
+flag-frequency → anchor against an independent resolution oracle (a third-party proxy, not ground
+truth) → report honestly (including nulls).
 
 Layout mirrors the `TransluceAI/claude-code-plugins` marketplace pattern.
 
 ## Install
 
+Two steps — **adding a marketplace does not install the plugin**:
+
 ```
-/plugin marketplace add tarionai/docent-investigation-skill
+/plugin marketplace add tarionai/docent-investigation-skill   # 1. register the marketplace
+/plugin install docent-investigation@tarionai-plugins         # 2. install the plugin
 ```
+
+Then invoke the `investigation` skill.
 
 ## Repo layout
 
@@ -34,6 +40,6 @@ python -m pytest -q
 
 ## Status
 
-Built under the `/vneg-build` plan-gated pipeline. See `docs/plans/IMPLEMENTATION_PLAN.md`. Node **N0**
-(this scaffold) is complete; the live investigation nodes are gated on external Docent access
-(see the plan's §9 BLOCKER).
+Built under the `/vneg-build` plan-gated pipeline (see `docs/plans/IMPLEMENTATION_PLAN.md`). The live
+**N=100** investigation has run end to end: see `reports/INVESTIGATION_REPORT.md` for the result and
+`reports/labeled_rows.json` for the committed per-run rows.
