@@ -1,0 +1,17 @@
+{
+  "name": "tarionai-plugins",
+  "owner": "tarionai",
+  "metadata": {
+    "description": "Docent behavioral-investigation tooling for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "docent-investigation",
+      "source": "./plugins/docent-investigation",
+      "description": "A Claude Code skill that drives an honest behavioral investigation on Docent.",
+      "version": "0.1.0",
+      "author": "tarionai",
+      "tags": ["analysis", "ai", "mcp", "evaluation", "docent"]
+    }
+  ]
+}

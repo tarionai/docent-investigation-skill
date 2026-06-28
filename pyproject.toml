@@ -1,0 +1,8 @@
+[project]
+name = "docent-investigation-skill"
+version = "0.1.0"
+description = "A Claude Code skill that drives an honest behavioral investigation on Docent."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
