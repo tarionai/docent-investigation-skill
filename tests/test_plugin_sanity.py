@@ -15,7 +15,10 @@ def test_real_tree_passes():
 
 def _clone(tmp_path: Path) -> Path:
     dst = tmp_path / "repo"
-    shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns(".git", "__pycache__", ".pytest_cache"))
+    shutil.copytree(
+        ROOT, dst,
+        ignore=shutil.ignore_patterns(".git", ".venv", "venv", "__pycache__", ".pytest_cache", "data"),
+    )
     return dst
 
 

@@ -7,11 +7,15 @@ Run from anywhere: `python tools/plugin_sanity.py`. Exits non-zero on any violat
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
 
 PLUGIN_NAME = "docent-investigation"
+# Dirs that are not part of the plugin's own source — never scanned for forbidden files.
+SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", "data",
+             "node_modules", ".mypy_cache", ".ruff_cache", "build", "dist"}
 PLUGIN_DIR = Path("plugins") / PLUGIN_NAME
 SKILL_DIR = PLUGIN_DIR / "skills" / "investigation"
 
@@ -93,12 +97,12 @@ def _check_skill_files(root: Path, errors: list[str]) -> None:
 
 
 def _check_forbidden(root: Path, errors: list[str]) -> None:
-    for path in root.rglob("*"):
-        if ".git" in path.parts or not path.is_file():
-            continue
-        name = path.name
-        if name in FORBIDDEN_EXACT or name.startswith("docent.env"):
-            errors.append(f"forbidden file present: {path.relative_to(root).as_posix()}")
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        for name in filenames:
+            if name in FORBIDDEN_EXACT or name.startswith("docent.env"):
+                rel = Path(dirpath, name).relative_to(root).as_posix()
+                errors.append(f"forbidden file present: {rel}")
 
 
 def check(repo_root: Path | str) -> list[str]:
