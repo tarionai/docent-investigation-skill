@@ -6,7 +6,7 @@ from enum import Enum
 
 
 class OracleLabel(str, Enum):
-    """Ground-truth resolution of a SWE-bench agent run.
+    """Third-party resolution label (a proxy for "solved") of a SWE-bench agent run.
 
     RESOLVED: the agent's patch made the hidden tests pass.
     UNRESOLVED: a patch was submitted but tests still failed.

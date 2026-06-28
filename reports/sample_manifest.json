@@ -1,0 +1,509 @@
+{
+  "source_dataset": "pankajmathur/nemotron-nano-swebench-verified-traj",
+  "view": "openhands",
+  "order": "sorted filename of data/records/*.json, first n (matches batch.load_records)",
+  "hash": "sha256 of the raw fetched record bytes",
+  "n": 100,
+  "records": [
+    {
+      "instance_id": "astropy__astropy-12907",
+      "file": "astropy__astropy-12907.json",
+      "sha256": "005ae72cff9a25490c08c43ea04465af4ea92228d4524ec2fb47ecf2e211847e"
+    },
+    {
+      "instance_id": "astropy__astropy-13033",
+      "file": "astropy__astropy-13033.json",
+      "sha256": "ee22bc74e618155d44079ea782dc9cd6b03a8c0fde3930c2bf13f70518c2346b"
+    },
+    {
+      "instance_id": "astropy__astropy-13236",
+      "file": "astropy__astropy-13236.json",
+      "sha256": "8f779edd8d0bb35b7f141534de579dd1f8c3bcbfab36ef60a359b919f89cc008"
+    },
+    {
+      "instance_id": "astropy__astropy-13398",
+      "file": "astropy__astropy-13398.json",
+      "sha256": "1cf8838dccc615667cc78296d385640749b3678c757075d9348069e76c34ed67"
+    },
+    {
+      "instance_id": "astropy__astropy-13453",
+      "file": "astropy__astropy-13453.json",
+      "sha256": "4a395523b764636a7532afc8b7022d63bf08ce3ce89603c7344efa4f94557c4b"
+    },
+    {
+      "instance_id": "astropy__astropy-13579",
+      "file": "astropy__astropy-13579.json",
+      "sha256": "432f7d630dfffd143ad9e2cc3ba1976755e9006fc3a06bf4cc2849accfa9e7c7"
+    },
+    {
+      "instance_id": "astropy__astropy-13977",
+      "file": "astropy__astropy-13977.json",
+      "sha256": "2b701d1f4640a5e5407f07e648e8d089151dd18f29e4c7f8085b91f37c133dfb"
+    },
+    {
+      "instance_id": "astropy__astropy-14096",
+      "file": "astropy__astropy-14096.json",
+      "sha256": "c896eb5bd636fcc46024806394e96ce9aa481db937c7b7798e39d90a6c53aa23"
+    },
+    {
+      "instance_id": "astropy__astropy-14182",
+      "file": "astropy__astropy-14182.json",
+      "sha256": "fe54ebb88438cd8f8ac1dd8015240d84e26e2617ebc1a1ef2a2375e0f5d3a997"
+    },
+    {
+      "instance_id": "astropy__astropy-14309",
+      "file": "astropy__astropy-14309.json",
+      "sha256": "5a0560b54cbfcbb7355967214ad6da53a57ce9cf288942f2f3cb660d1c3bd211"
+    },
+    {
+      "instance_id": "astropy__astropy-14365",
+      "file": "astropy__astropy-14365.json",
+      "sha256": "24e3a8a784595091268a8253918efe0cdf02ec62d0aa38baf020d1bee470aef9"
+    },
+    {
+      "instance_id": "astropy__astropy-14369",
+      "file": "astropy__astropy-14369.json",
+      "sha256": "c4b2eafba09559f4fda31ec9669f5158e399fb79ae3ec7a0db9e07b2b420ad75"
+    },
+    {
+      "instance_id": "astropy__astropy-14508",
+      "file": "astropy__astropy-14508.json",
+      "sha256": "4e022cec4957b7326c42f2511656f6b29855ed4da54f89fb95625afe2c730121"
+    },
+    {
+      "instance_id": "astropy__astropy-14539",
+      "file": "astropy__astropy-14539.json",
+      "sha256": "697e245a186fda42da42e1a565ef37533caae499f648f1b7598ad11266a2c090"
+    },
+    {
+      "instance_id": "astropy__astropy-14598",
+      "file": "astropy__astropy-14598.json",
+      "sha256": "4eb72aa4b02f5fce1ba5c9f80e5851928c11194dfd7ca5f588de73246637e959"
+    },
+    {
+      "instance_id": "astropy__astropy-14995",
+      "file": "astropy__astropy-14995.json",
+      "sha256": "64c7ab4422a7dee2152f64839fa7656c5ccc588a7e4efd7315c1f8ac87264b03"
+    },
+    {
+      "instance_id": "astropy__astropy-7166",
+      "file": "astropy__astropy-7166.json",
+      "sha256": "45055ad4fe3883583266c3345e8d5a90b51401a0783112462681b8b055c126e4"
+    },
+    {
+      "instance_id": "astropy__astropy-7336",
+      "file": "astropy__astropy-7336.json",
+      "sha256": "cdfad570ea2fb9d48d0c9d17dfa98b6bf75b8691b23abb1274162cbcda96dc1a"
+    },
+    {
+      "instance_id": "astropy__astropy-7606",
+      "file": "astropy__astropy-7606.json",
+      "sha256": "4572bda84e0cef3fcc957b411499c2f901d665bce744ea8594b4309aecc25050"
+    },
+    {
+      "instance_id": "astropy__astropy-7671",
+      "file": "astropy__astropy-7671.json",
+      "sha256": "bdc56788d6250dabfb377e5086723cd4c0954d15365a454aab7ec129b0e73ee8"
+    },
+    {
+      "instance_id": "astropy__astropy-8707",
+      "file": "astropy__astropy-8707.json",
+      "sha256": "398d95b952290f1c9169c5560e9099caf21b72091444249f3d08773493ad16f5"
+    },
+    {
+      "instance_id": "astropy__astropy-8872",
+      "file": "astropy__astropy-8872.json",
+      "sha256": "bcb0721f1d781cfa55f3522b7092b4a9879b1d6bfba815d216fbf9c7a1230117"
+    },
+    {
+      "instance_id": "django__django-10097",
+      "file": "django__django-10097.json",
+      "sha256": "6962f265e0d8db58e548da745fe489bc2eec17cac24676be0268ebd3aa9ff65e"
+    },
+    {
+      "instance_id": "django__django-10554",
+      "file": "django__django-10554.json",
+      "sha256": "79ad9077d4298519d72bb27453b59262de91572aafbda4f965961714aa4cd52d"
+    },
+    {
+      "instance_id": "django__django-10880",
+      "file": "django__django-10880.json",
+      "sha256": "f37ffa272ce0c002f114e472d86bf9c529e93ca077f73d4b234bf241e9672bf7"
+    },
+    {
+      "instance_id": "django__django-10914",
+      "file": "django__django-10914.json",
+      "sha256": "e5c9128460864e81a86340ca83ba9bfb0cd947e6405aab9e43744ad845e37a13"
+    },
+    {
+      "instance_id": "django__django-10973",
+      "file": "django__django-10973.json",
+      "sha256": "ee5478d69cb4140c734e2953d3d8710c64219fe3b9712569e070cbbc8037fa71"
+    },
+    {
+      "instance_id": "django__django-10999",
+      "file": "django__django-10999.json",
+      "sha256": "89c6a0d9b4652d0fc9bb59ba0d550da9bc00e71e5ce89ce6ec2a8b413ecaab54"
+    },
+    {
+      "instance_id": "django__django-11066",
+      "file": "django__django-11066.json",
+      "sha256": "6319de5825db4529d4138bcad69efd10e54bbb2833af2d78fdf3895b37df88d8"
+    },
+    {
+      "instance_id": "django__django-11087",
+      "file": "django__django-11087.json",
+      "sha256": "482d665ad8e692dad1561292fb698b7260d745ba62f1e9a552fa5d916045848c"
+    },
+    {
+      "instance_id": "django__django-11095",
+      "file": "django__django-11095.json",
+      "sha256": "9b28db304d39066ec899eedab9ab220a2586e0f7db494a735d7467b5ac42d69b"
+    },
+    {
+      "instance_id": "django__django-11099",
+      "file": "django__django-11099.json",
+      "sha256": "1da56f8dc52f886d313ccf3296603ba7c82f6e5fb4a092af1aa20b14d2afb199"
+    },
+    {
+      "instance_id": "django__django-11119",
+      "file": "django__django-11119.json",
+      "sha256": "7fc63612366fc07e187b52e4d420bf2ccb63088fb1a0176551187f0f468b790b"
+    },
+    {
+      "instance_id": "django__django-11133",
+      "file": "django__django-11133.json",
+      "sha256": "0bfcf9b0ae4b14d11d9e08376a1a42dc5179703cbbee0dffe1bf038733499547"
+    },
+    {
+      "instance_id": "django__django-11138",
+      "file": "django__django-11138.json",
+      "sha256": "9322a3a054c557c1a4bf6acc21298b780caf6294b680d083b5ab033f94ebd298"
+    },
+    {
+      "instance_id": "django__django-11141",
+      "file": "django__django-11141.json",
+      "sha256": "eff0a60a941f141eafcb216a98645159857fc94fe89e784f81614f8b5831d5e4"
+    },
+    {
+      "instance_id": "django__django-11149",
+      "file": "django__django-11149.json",
+      "sha256": "1ac58ef66abfd527ece5f84a21ca2c8a6cba78c2cf5e9719826686095133e1eb"
+    },
+    {
+      "instance_id": "django__django-11163",
+      "file": "django__django-11163.json",
+      "sha256": "dc9d3fda5b2cf067f95d9c5ceee6d6ff9884ea4fd0b666852df2090ddd9e18d5"
+    },
+    {
+      "instance_id": "django__django-11179",
+      "file": "django__django-11179.json",
+      "sha256": "b4e961d5bb167c5279c5a4180bf9ba3c566a6b1d483042d0b516d6fe045e3443"
+    },
+    {
+      "instance_id": "django__django-11206",
+      "file": "django__django-11206.json",
+      "sha256": "65b6b58e820ed0505a6ed3042b13c48c881fdb3d35703cd3d5631cea8d3f436b"
+    },
+    {
+      "instance_id": "django__django-11211",
+      "file": "django__django-11211.json",
+      "sha256": "828ed2f26c0169c821ffe90fb4e2ea99bd5a3ada626ef781ccfd3361bbf3cc00"
+    },
+    {
+      "instance_id": "django__django-11239",
+      "file": "django__django-11239.json",
+      "sha256": "fd16fd2527e02859bbc5b3b03b51b2497900de987ab4d6aa4d149c255e427470"
+    },
+    {
+      "instance_id": "django__django-11265",
+      "file": "django__django-11265.json",
+      "sha256": "8834c824225983adc917c252dd49908d4756fd9b40d0844614b60cc5c56963f5"
+    },
+    {
+      "instance_id": "django__django-11276",
+      "file": "django__django-11276.json",
+      "sha256": "14effabbe4f5402a9d5477e608dab3e21f6f3c9fc56870df0917bd27250afa61"
+    },
+    {
+      "instance_id": "django__django-11292",
+      "file": "django__django-11292.json",
+      "sha256": "b47cc53216e6f4d80350fd89ba8c2e5dc236463577ae6f82e7fd978b1028ee1a"
+    },
+    {
+      "instance_id": "django__django-11299",
+      "file": "django__django-11299.json",
+      "sha256": "841050db351674d9cc469fddd737f9f7dd282d1641942bae0885b8d2c602b33b"
+    },
+    {
+      "instance_id": "django__django-11333",
+      "file": "django__django-11333.json",
+      "sha256": "c89ef56ed135cb0bdc4fab0853873b2a52e767da2eed922e4f603180738294ce"
+    },
+    {
+      "instance_id": "django__django-11400",
+      "file": "django__django-11400.json",
+      "sha256": "30d2f7b82c652d6f2f0dd3dfcb965683b8e4f019f8fa2e9f02e59321e4f8528d"
+    },
+    {
+      "instance_id": "django__django-11433",
+      "file": "django__django-11433.json",
+      "sha256": "405ddf46a4c3bfdf662a76d2b479931c786370211ce6f202e5884403b1ad400e"
+    },
+    {
+      "instance_id": "django__django-11451",
+      "file": "django__django-11451.json",
+      "sha256": "d3063518dee545ae8bf0dca981df4c65fc91c97204b27c4de0ad9625c1a695b3"
+    },
+    {
+      "instance_id": "django__django-11477",
+      "file": "django__django-11477.json",
+      "sha256": "c804baa3e3c11f4be8efedab07a70925c916d2b0257844a72f09c3a591262c50"
+    },
+    {
+      "instance_id": "django__django-11490",
+      "file": "django__django-11490.json",
+      "sha256": "e8917259ecaa599123528e59c0d1b61a819c6c2ca9d188bc812245abb7627358"
+    },
+    {
+      "instance_id": "django__django-11532",
+      "file": "django__django-11532.json",
+      "sha256": "67839796d1bdea834a37336a25c8656caed758906896cdf9bfd45564a153f9fb"
+    },
+    {
+      "instance_id": "django__django-11551",
+      "file": "django__django-11551.json",
+      "sha256": "16917506266d4c799d76ec5908d489637e50634a2367d0e11f009ee1b88c2f88"
+    },
+    {
+      "instance_id": "django__django-11555",
+      "file": "django__django-11555.json",
+      "sha256": "7d406c044784ce636760d7f9ce8d45af8cc51163aec52c17c6c4795f1db9ba43"
+    },
+    {
+      "instance_id": "django__django-11603",
+      "file": "django__django-11603.json",
+      "sha256": "fab5afb93f915283bf6f423c45f695bf37554daadefaa9915e4c3fe7e2bcac79"
+    },
+    {
+      "instance_id": "django__django-11728",
+      "file": "django__django-11728.json",
+      "sha256": "9f9bd34447a0e176ba20a0c9bc4c7e9640bc8bfd1aabff90e1790f0d517f057f"
+    },
+    {
+      "instance_id": "django__django-11734",
+      "file": "django__django-11734.json",
+      "sha256": "e95ed06a1648c8201b64deca2442908608f26df9fb04b84a1b5d136b8790acf0"
+    },
+    {
+      "instance_id": "django__django-11740",
+      "file": "django__django-11740.json",
+      "sha256": "7aa1fb015e5a1d0b6cacb6545f92f0dacc37ed6c1195300d1e098c2686ae6dc3"
+    },
+    {
+      "instance_id": "django__django-11749",
+      "file": "django__django-11749.json",
+      "sha256": "68348da830a5cb60f27db692ae5b26be78b56f555c6601183cc9b7ee8dd06ba5"
+    },
+    {
+      "instance_id": "django__django-11790",
+      "file": "django__django-11790.json",
+      "sha256": "9e8805416e58be78e01b43e033a61418d47cbb6afa1e9131aa080153c7fedb6b"
+    },
+    {
+      "instance_id": "django__django-11815",
+      "file": "django__django-11815.json",
+      "sha256": "a65ecca5b3308f59b3e031baf115a82ef65079137bdc148debdb52baf8f5d1ff"
+    },
+    {
+      "instance_id": "django__django-11820",
+      "file": "django__django-11820.json",
+      "sha256": "0f9c4762323a9f594dbbd7f01e0bb42e24134ff268782c0e6a98b48c2d0ddc68"
+    },
+    {
+      "instance_id": "django__django-11848",
+      "file": "django__django-11848.json",
+      "sha256": "22a0a0f499ffc99e70e2abd9162116f4219b33ba980f9a0c0590bfa39bde30cc"
+    },
+    {
+      "instance_id": "django__django-11880",
+      "file": "django__django-11880.json",
+      "sha256": "57b017ad31847053b80bcc0fb2d7bae7acc9f9d04d1af113b4703992db533348"
+    },
+    {
+      "instance_id": "django__django-11885",
+      "file": "django__django-11885.json",
+      "sha256": "5390525f3ebf727b092f363bf8437d70f0b78a6a4339db1b00a08def49e94b89"
+    },
+    {
+      "instance_id": "django__django-11951",
+      "file": "django__django-11951.json",
+      "sha256": "7a95bbaa7e6c8837859d625a0cc4c59c4671cb913274648b7206ac6b86047038"
+    },
+    {
+      "instance_id": "django__django-11964",
+      "file": "django__django-11964.json",
+      "sha256": "53c625718490b2359deb897346ccd8aa7fdf8e5876d190f8adc700b926d44ed1"
+    },
+    {
+      "instance_id": "django__django-11999",
+      "file": "django__django-11999.json",
+      "sha256": "22c1dc2a6a3ce4380265872655e257dbd35fb2e8da0a2724fca8379a8317ca02"
+    },
+    {
+      "instance_id": "django__django-12039",
+      "file": "django__django-12039.json",
+      "sha256": "f668bf360aa9ae23d825c2acd5c24649350494801fd07d05d447407d07b007fc"
+    },
+    {
+      "instance_id": "django__django-12050",
+      "file": "django__django-12050.json",
+      "sha256": "b31d862f27a5487a2fcc04da89e20974e67ce53895676cdce984e89cbecf7017"
+    },
+    {
+      "instance_id": "django__django-12125",
+      "file": "django__django-12125.json",
+      "sha256": "a3c38bb7f0f567b3749d79913614e98a97f94149476a73ab1d955929fe4056f0"
+    },
+    {
+      "instance_id": "django__django-12143",
+      "file": "django__django-12143.json",
+      "sha256": "03e2c02bb64506587787b8f07cf40cd304b31fb800a66e1cab8a2fcfa008b08c"
+    },
+    {
+      "instance_id": "django__django-12155",
+      "file": "django__django-12155.json",
+      "sha256": "d4c8e6352c1be339ddfce21f5767ef58c99bcc0e289da753b806787ea1a4b34f"
+    },
+    {
+      "instance_id": "django__django-12193",
+      "file": "django__django-12193.json",
+      "sha256": "96a088b4f11c455372c34aff292435b55fade4215972eec9e87a06612f1d62aa"
+    },
+    {
+      "instance_id": "django__django-12209",
+      "file": "django__django-12209.json",
+      "sha256": "9f9a4195f09d440a060d89b1b7acc17e1d7a2cee0f5928985bbe882a86f43558"
+    },
+    {
+      "instance_id": "django__django-12262",
+      "file": "django__django-12262.json",
+      "sha256": "5e49be13ede5d1fbaab69a5282803cac1653d45daa265840d1aff4dbf7974c3f"
+    },
+    {
+      "instance_id": "django__django-12273",
+      "file": "django__django-12273.json",
+      "sha256": "bac56f5cc6ca0b998a0dcc7ff91bf9256ed40958fb5d964ee180a868e5190ee2"
+    },
+    {
+      "instance_id": "django__django-12276",
+      "file": "django__django-12276.json",
+      "sha256": "dd9ee201ca2ef7c3209ff5b0042096a95a86b6a2f8361d9c265541e6a40e3851"
+    },
+    {
+      "instance_id": "django__django-12304",
+      "file": "django__django-12304.json",
+      "sha256": "0ccddd172f29f0f0c50978cc9c2384ddd13ab230537ff37ce40fdecc7e63016b"
+    },
+    {
+      "instance_id": "django__django-12308",
+      "file": "django__django-12308.json",
+      "sha256": "12473681d104cc358dc4a70c14c9cd1b1833118d8894f20a2403a6648f4dc936"
+    },
+    {
+      "instance_id": "django__django-12325",
+      "file": "django__django-12325.json",
+      "sha256": "409923efd4918a80674d178a96997349617629b604c48a5d36bed8feb3ed7dd8"
+    },
+    {
+      "instance_id": "django__django-12406",
+      "file": "django__django-12406.json",
+      "sha256": "2680fcffb21ed06929ddb837286b932e7766955371ecfdf705166b983adc4139"
+    },
+    {
+      "instance_id": "django__django-12419",
+      "file": "django__django-12419.json",
+      "sha256": "e8f6e07a7a48eca3a6da3344236eb6a20bae745d16ef007f59930b3e6bd21228"
+    },
+    {
+      "instance_id": "django__django-12663",
+      "file": "django__django-12663.json",
+      "sha256": "0e529c56aae637a1d8c2e42ca08fc868047e0fe4283a14860e246914443b4f30"
+    },
+    {
+      "instance_id": "django__django-12708",
+      "file": "django__django-12708.json",
+      "sha256": "fcf3127b0e5fc8998162bf10e1d433e89ad08aca9be13d27806ee7d248d7d2cb"
+    },
+    {
+      "instance_id": "django__django-12713",
+      "file": "django__django-12713.json",
+      "sha256": "6fc3319cad655930512af9e6129431f2a49f19d7ed53cae3b8b552f4c5df48d4"
+    },
+    {
+      "instance_id": "django__django-12741",
+      "file": "django__django-12741.json",
+      "sha256": "3ae72f24e770fbe583e4e8fbc0f5c932e166826edee52c52f678a616fa843596"
+    },
+    {
+      "instance_id": "django__django-12754",
+      "file": "django__django-12754.json",
+      "sha256": "4ea6d75bd41ab2d7c6660815a149573b0a8a8e72911f2ede43382f7667e91fd4"
+    },
+    {
+      "instance_id": "django__django-12774",
+      "file": "django__django-12774.json",
+      "sha256": "09ff139e908ee0aba34501482b171778272aae1ce7ab16db3ec891c53711c9ed"
+    },
+    {
+      "instance_id": "django__django-12858",
+      "file": "django__django-12858.json",
+      "sha256": "4f10db9954ecc18b10d63efdd562c4aa3c7d24d791ab3be87c8b90fbd3e9ebec"
+    },
+    {
+      "instance_id": "django__django-12965",
+      "file": "django__django-12965.json",
+      "sha256": "1697a8f065fed697a5ca1debe61c96724514d3dbbcface7c9645649728f680f3"
+    },
+    {
+      "instance_id": "django__django-13012",
+      "file": "django__django-13012.json",
+      "sha256": "6ba2814d502ed9d690d0026afd8ccf6cfe7ca3998993e04be072310606e4e93b"
+    },
+    {
+      "instance_id": "django__django-13023",
+      "file": "django__django-13023.json",
+      "sha256": "e2a5e50e706a0c6403dcf9eb1102821a6873513e71f5b1eb24413e71ca81d751"
+    },
+    {
+      "instance_id": "django__django-13028",
+      "file": "django__django-13028.json",
+      "sha256": "045c9e37465c18493300b574a2b7fad411ba13117ba52298504f220a10e8a19b"
+    },
+    {
+      "instance_id": "django__django-13033",
+      "file": "django__django-13033.json",
+      "sha256": "88eabad9364d52f9f5818294ad8ff88f430d4f8034fa70f6ba2a3cda341a3eca"
+    },
+    {
+      "instance_id": "django__django-13089",
+      "file": "django__django-13089.json",
+      "sha256": "56f735f713bda7383c056deb614d25fa1cd28647770bae3c6748d7b4ebfc39ce"
+    },
+    {
+      "instance_id": "django__django-13109",
+      "file": "django__django-13109.json",
+      "sha256": "d4897d7359dd1aae01aaa4e3b6f33477810bd0b72b41124df5e34cc954e07276"
+    },
+    {
+      "instance_id": "django__django-13112",
+      "file": "django__django-13112.json",
+      "sha256": "78c0bca22b87a3f69233636b9a0f33f754becbe77adb5083fa63738c803d1dd2"
+    },
+    {
+      "instance_id": "django__django-13121",
+      "file": "django__django-13121.json",
+      "sha256": "3348852128526f343e68db42a5671d5761b8074ab3c00809e7f09c38bcca3a68"
+    }
+  ]
+}
