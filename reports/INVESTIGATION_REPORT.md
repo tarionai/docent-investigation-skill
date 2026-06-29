@@ -2,10 +2,9 @@
 
 **Artifact:** a reusable Claude Code skill (`investigation`) that drives an honest, oracle-anchored
 behavioral investigation on [Docent](https://docs.transluce.org), plus this worked reference run.
-**Docent collection:** https://docent.transluce.org/dashboard/6b6b1e65-e770-4049-ade9-9bd6ba538f4f
-(verify it is anon-viewable in a private window before relying on it as open). The de-identified
-per-run rows are committed at `reports/labeled_rows.json`, so the 2×2 recomputes offline without the
-live judge.
+**Reproducibility:** the de-identified per-run rows are committed at `reports/labeled_rows.json`, so the
+2×2 recomputes offline without the live judge.
+**Docent collection (secondary view):** https://docent.transluce.org/dashboard/6b6b1e65-e770-4049-ade9-9bd6ba538f4f
 
 ## Question
 When a coding agent **declares it has solved the task**, how often has it actually *not*? "False-success
@@ -42,10 +41,14 @@ Two results, reported separately and never conjoined into one verdict:
 **(1) Primary estimand — false-success rate** (the pre-registered verdict keys on this alone):
 | metric | value |
 |---|---|
-| false-success rate = B/(A+B) | **0.53** (10/19) |
+| false-success rate = P(not_resolved \| declared_success) = B/(A+B) | **0.53** (10/19) |
 | Wilson 95% CI | **[0.32, 0.73]** |
 | pre-registered threshold | 0.50 |
-| verdict (CI lower bound ≥ 0.50?) | **NOT_SUPPORTED** *(descriptive, post-A1)* |
+| verdict (CI lower bound ≥ 0.50?) | **NOT_SUPPORTED** |
+
+*The metric is the conditional proportion P(not_resolved \| declared_success) — the share of confident
+declarations that failed — **not** the conventional false-positive rate (whose denominator would be all
+not_resolved runs).*
 
 **(2) Association — are declarations informative?** (descriptive, deliberately *not* part of the verdict):
 | metric | value |
@@ -66,18 +69,18 @@ Two true things, neither overclaimed:
    above half. At n=19 the signal is real and unreliable; we **cannot** assert it is wrong "more than
    half the time" as a population claim.
 
-The verdict on the primary estimand is **NOT_SUPPORTED** at the 0.50 threshold — reported as-is, *not*
-rounded up to a finding because the association is significant. The point of the artifact is that the
-method forces these two orthogonal results apart instead of collapsing them into a single headline
-token.
+The verdict on the primary estimand is **NOT_SUPPORTED** at the 0.50 threshold — meaning the ≥0.50
+claim *failed its support criterion*, **not** that the rate is below 0.50 (the point estimate, 0.53, is
+in fact above it). Reported as-is, *not* rounded up to a finding because the association is significant.
 
-> **Disclosure.** This split-verdict rule is a *post-hoc correction* of a defect in the original
-> pre-registered rule (which conjoined the rate with an association direction, leaving an undefined
-> region). See `PRE_REGISTRATION.md` Amendment A1. The original rule is frozen at commit `c943b95`; the
-> corrected verdict here is therefore reported **descriptively**, not as a confirmatory pre-registered
-> outcome. Note the committed pipeline's original rule returned `INCONCLUSIVE` on this data; the move to
-> a CI-based threshold (which yields `NOT_SUPPORTED`) was a **human revision**, not an automatic property
-> of the method — so read "the method forces restraint" as bounded by that.
+> **On the decision rule.** The bottom line is robust to it: at n=19 the estimate (0.53) cannot clear
+> 0.50 once sampling uncertainty is respected — the Wilson interval [0.32, 0.73] straddles it — so **no
+> rule that respects that uncertainty returns `SUPPORTED`** (a lower-bound rule returns `NOT_SUPPORTED`;
+> a three-way or Bayesian rule would call it inconclusive). The pre-registered rule as first written had
+> a defect (it conjoined the rate with an association direction, leaving an undefined region), so we
+> corrected it to key the verdict on the rate's Wilson lower bound; the original is frozen in
+> `PRE_REGISTRATION.md` (Amendment A1) for audit. Because the correction post-dates the data we treat
+> this verdict as exploratory — the conclusion does not depend on it.
 
 ## Robustness — empty-patch handling
 The binary oracle folds `empty_patch` into `not_resolved`, which could in principle inflate the
@@ -86,6 +89,24 @@ false-success rate. Recomputing with all 34 empty-patch runs excluded: **0** of 
 **unchanged** — 0.53, 95% CI [0.32, 0.73], still `NOT_SUPPORTED` (association p=0.002 on the n=66
 table). The empty patches all sit in the not-declared / not-resolved cell, where they cannot move the
 estimand.
+
+## Robustness — repository stratification
+The slice is 22 astropy + 78 django, so the aggregate 8× association could in principle be a
+composition artifact (Simpson's paradox). It is **not** — the association holds *within* each repo, same
+direction:
+
+|                                  | astropy (n=22) | django (n=78) |
+|----------------------------------|----------------|---------------|
+| resolved-rate \| declared        | 0.29 (2/7)     | 0.58 (7/12)   |
+| resolved-rate \| not_declared    | 0.07 (1/15)    | 0.06 (4/66)   |
+| false-success rate B/(A+B)       | 0.71 (5/7)     | 0.42 (5/12)   |
+
+Declarations stay informative in both repos (4.3× and 9.6×), so the aggregate relationship is not
+repository-confounded. The false-success *rate*, by contrast, is heterogeneous (0.71 vs 0.42, on n=7 and
+n=12) — which **sharpens** the imprecision caveat rather than softening it: the aggregate 0.53 is a
+mixture-weighted blend over two strata that disagree, and neither stratum has the n to pin its own rate.
+A repo-stratified random draw (deferred) is the fix for both the composition and the per-stratum
+precision.
 
 ## Oracle provenance (the "oracle" is a third-party resolution proxy)
 Two caveats the word "oracle" must not paper over:
@@ -118,18 +139,20 @@ the other:
 
 ## Other blind spots (stated, not hidden)
 - **Method scope.** The non-circular anchoring only applies to behaviors that are transcript-detectable
-  *and* checkable against an oracle withheld from the judge (the skill's admissibility test). The durable
-  contribution is that bounded discipline — false-success is the *illustration*, not the point. Behaviors
+  *and* checkable against an oracle withheld from the judge (the skill's admissibility test). Behaviors
   whose only oracle is in-transcript (e.g. tool-call hallucination) are out of scope by construction.
 - Single model (Nemotron-Nano), single scaffold (OpenHands), single benchmark (SWE-bench Verified),
   N=100. No claim of generality. "Premature convergence despite contradictory evidence" is a richer,
   noisier behavior also deferred to vNext.
 
 ## Related work & positioning
-Read this as **calibration of self-reported task completion in coding agents**: the agent's explicit
-"done" is a *verbalized binary confidence judgment*, measured against an independent resolution oracle.
-Framed that way the phenomenon is **not new** — the honest contribution is the instrument, not the
-discovery.
+Read this as the **reliability of self-reported task completion in coding agents** — a claim-outcome
+consistency measure, *not* probabilistic calibration: we never elicit a probability, and "confidently"
+is assigned by the judge from the transcript, not supplied by the agent (the OpenHands scaffold may also
+shape the final completion report). The agent's explicit "done" is the degenerate, one-bin case of a
+*verbalized confidence judgment* measured against an independent resolution oracle — which is why the
+calibration literature is the right neighborhood. Framed that way the phenomenon is **not new** — the
+honest contribution is the instrument, not the discovery.
 
 - **Completion as verbalized confidence.** That models can (mis)state their own correctness is the
   calibration literature: self-knowledge / P(True) (Kadavath et al.,
@@ -138,18 +161,23 @@ discovery.
   [2305.14975](https://arxiv.org/abs/2305.14975)), and the finding that elicited confidence is
   pervasively overconfident (Xiong et al., [2306.13063](https://arxiv.org/abs/2306.13063)). A success
   declaration is the agentic, binary case of exactly this.
-- **The behavior is already named.** "Corrupt success" — completion claims that aren't genuine — is
-  quantified by Cao, Driouich & Thomas ([2603.03116](https://arxiv.org/abs/2603.03116); a 27–78%
-  claimed-vs-genuine gap); a competent reviewer will say this work *relabels* it, so we engage it
-  directly. Verification failure and premature termination are catalogued in MAST (Cemri et al.,
+- **Documented in adjacent work — but differently conditioned.** "Corrupt success" (Cao, Driouich &
+  Thomas, [2603.03116](https://arxiv.org/abs/2603.03116)) conditions on *benchmark-reported* success and
+  asks whether procedure/integrity constraints were violated; we condition on the *agent's own* success
+  declaration and ask whether an external resolution proxy says it failed. The constructs overlap
+  conceptually but are not the same measurement — their headline rate (the corrupt fraction of
+  benchmark-passed runs, on τ-bench) is not this report's `P(not_resolved | declared_success)`, so we
+  position it as related work, not a prior measurement of our quantity. Verification failure and
+  premature termination are catalogued in MAST (Cemri et al.,
   [2503.13657](https://arxiv.org/abs/2503.13657)); agents asserting actions they never took in
   MIRAGE-Bench (Zhang et al., [2507.21017](https://arxiv.org/abs/2507.21017)); and benchmarks
   over-crediting non-completion in the ABC checklist (Zhu et al.,
-  [2507.02825](https://arxiv.org/abs/2507.02825)). A test-passing-but-wrong patch declared "done" is
-  also a **completion-signal Goodhart** — the specification-gaming / reward-hacking lineage (Amodei
-  et al., [1606.06565](https://arxiv.org/abs/1606.06565); Gao, Schulman & Hilton,
-  [2210.10760](https://arxiv.org/abs/2210.10760)) — and a sibling of sycophantic agreement (Sharma
-  et al., [2310.13548](https://arxiv.org/abs/2310.13548)).
+  [2507.02825](https://arxiv.org/abs/2507.02825)). We **distinguish** false-success from adjacent failure modes rather than equate them: reward hacking /
+  specification gaming (Amodei et al., [1606.06565](https://arxiv.org/abs/1606.06565)) presumes the agent
+  optimizes a known-gameable proxy, and sycophancy (Sharma et al.,
+  [2310.13548](https://arxiv.org/abs/2310.13548)) is user-preference matching — an honest-but-wrong
+  "done" is *miscalibration*, not either mechanism, and our transcript data establishes neither
+  proxy-exploitation nor user-pleasing intent.
 - **Both instruments have documented limits.** The judge is a single LLM, and LLM-judges carry
   position / verbosity / self-preference bias against an ~80% human-agreement ceiling (Zheng et al.,
   [2306.05685](https://arxiv.org/abs/2306.05685); Panickssery et al.,
@@ -159,13 +187,23 @@ discovery.
   [2509.16941](https://arxiv.org/abs/2509.16941): ~23% vs >70% on Verified).
 - **The narrow slice we do claim:** the *self-report channel itself* as the measured variable — the
   agent's verbal completion assertion cross-tabbed against an external oracle (ideally, in future, also
-  against its own internal confidence). Not a new failure mode; a sharper instrument on a known one.
+  against its own internal confidence) — a sharper instrument on a known phenomenon.
 
 ## Reproduce (cold clone)
-The exact sample is pinned in `reports/sample_manifest.json` (100 instance IDs + input hashes;
-regenerate with `scripts/write_manifest.py`). The labeled per-run rows are committed at
-`reports/labeled_rows.json`, so the 2×2 + verdict recompute **offline, no live judge**:
-`compute_anchor`/`evaluate_decision` over those rows reproduce A,B,C,D = 9,10,5,76 → `NOT_SUPPORTED`.
+Reproducibility here is three distinct guarantees, strongest first — do not collapse them into one word:
+1. **Result recomputation (strong).** The de-identified per-run rows are committed at
+   `reports/labeled_rows.json`, so the 2×2 + verdict recompute **offline, no live judge**:
+   `compute_anchor`/`evaluate_decision` over those rows reproduce A,B,C,D = 9,10,5,76 → `NOT_SUPPORTED`.
+2. **Data transformation (partial).** The sample is pinned in `reports/sample_manifest.json` (100
+   instance IDs + sha256 of the raw fetched bytes; regenerate with `scripts/write_manifest.py`), which
+   *detects* upstream drift. Pinning the source dataset's Hugging Face revision at acquisition time is
+   the stronger guarantee and is **not yet recorded — a known hardening gap.**
+3. **Live judge (not deterministic).** Re-running the rubric calls an external LLM judge; identical
+   labels are **not** promised, and Docent may not expose immutable judge/rubric versions. The committed
+   rows make the *result* durable even though the live judgment is not bit-reproducible.
+
+The public Docent collection is an optional secondary view — verify it is anon-viewable in a private
+window before relying on it as open; reproduction does not depend on it.
 ```
 git clone https://github.com/tarionai/docent-investigation-skill.git && cd docent-investigation-skill
 uv venv .venv && uv pip install --python .venv -e . pytest
