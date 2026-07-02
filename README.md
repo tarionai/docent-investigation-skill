@@ -1,10 +1,15 @@
 # docent-investigation-skill
 
-A Claude Code plugin marketplace whose `docent-investigation` plugin ships an **`investigation`** skill:
-it drives a complete, honest behavioral investigation on [Docent](https://docs.transluce.org) — ingest
-real agent runs → author + evaluate a rubric for a failure mode via the Docent SDK → measure
-flag-frequency → anchor against an independent resolution oracle (a third-party proxy, not ground
-truth) → report honestly (including nulls).
+A Claude Code plugin marketplace whose `docent-investigation` plugin ships an **`investigation`**
+skill: an end-to-end behavioral investigation pipeline for [Docent](https://docs.transluce.org). It
+ingests real agent runs, authors and evaluates a rubric for a target failure mode via the Docent SDK,
+measures flag-frequency, and anchors the rubric's labels against a resolution oracle withheld from
+the judge — so the measurement is non-circular by construction. Verdicts key on pre-registered
+decision rules (the reference run returned NOT_SUPPORTED, reported as-is) and recompute offline from
+committed per-run rows.
+
+**Worked reference run:** [False-success declaration in SWE-bench Verified agent runs](reports/INVESTIGATION_REPORT.md)
+— the skill applied end to end at N=100 (Nemotron-Nano, OpenHands scaffold).
 
 Layout mirrors the `TransluceAI/claude-code-plugins` marketplace pattern.
 
@@ -41,5 +46,25 @@ python -m pytest -q
 ## Status
 
 Built under the `/vneg-build` plan-gated pipeline (see `docs/plans/IMPLEMENTATION_PLAN.md`). The live
-**N=100** investigation has run end to end: see `reports/INVESTIGATION_REPORT.md` for the result and
-`reports/labeled_rows.json` for the committed per-run rows.
+**N=100** investigation (Nemotron-Nano on SWE-bench Verified) has run end to end — see the
+[investigation report](reports/INVESTIGATION_REPORT.md) for the full result and `reports/labeled_rows.json`
+for the committed per-run rows.
+
+**The skill is the product; the N=100 run is illustrative of the method, not a population claim.**
+
+The result is reported as a **split verdict** — the two estimands are never conjoined:
+
+- **Primary estimand — false-success rate** = P(not_resolved | declared_success) = **0.53 (10/19)**,
+  Wilson 95% CI **[0.32, 0.73]**, pre-registered threshold 0.50 → **NOT_SUPPORTED**. This means the
+  ≥0.50 claim *failed its support criterion* once sampling uncertainty is respected — **not** that the
+  rate is below 0.50 (0.53 is the point estimate; the interval straddles the line). Scope: 19
+  declared-success runs across 2 repos (astropy, django) — illustrative, not a population rate.
+- **Association** (are declarations informative about resolution?): descriptive only, deliberately
+  **not** part of the verdict (p=0.002, n=66).
+
+The resolution oracle is a third-party proxy (not ground truth), and a committed leak canary
+(`tests/test_metadata_canary.py`) proves it never reaches the blind judge — the exclusion is
+structural, not flag-dependent. The 2×2 and verdict recompute
+offline from the committed rows (`compute_anchor`/`evaluate_decision` → A,B,C,D = 9,10,5,76 →
+`NOT_SUPPORTED`), no live judge needed. `PRE_REGISTRATION.md` is frozen; the single correction is
+disclosed as a post-hoc amendment (A1).
