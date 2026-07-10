@@ -2,9 +2,10 @@
 
 A Claude Code plugin marketplace whose `docent-investigation` plugin ships an **`investigation`**
 skill: an end-to-end behavioral investigation pipeline for [Docent](https://docs.transluce.org). It
-ingests real agent runs, authors and evaluates a rubric for a target failure mode via the Docent SDK,
-measures flag-frequency, and anchors the rubric's labels against a resolution oracle withheld from
-the judge — so the measurement is non-circular by construction. Verdicts key on pre-registered
+ingests real agent runs, authors a rubric for a target failure mode, evaluates it as a blind Docent
+reading (the Analysis Plans surface Docent now recommends), measures flag-frequency, and anchors the
+rubric's labels against a resolution oracle withheld from the judge — so the measurement is
+non-circular by construction. Verdicts key on pre-registered
 decision rules (the reference run returned NOT_SUPPORTED, reported as-is) and recompute offline from
 committed per-run rows.
 
@@ -64,7 +65,7 @@ The result is reported as a **split verdict** — the two estimands are never co
 
 The resolution oracle is a third-party proxy (not ground truth), and a committed leak canary
 (`tests/test_metadata_canary.py`) proves it never reaches the blind judge — the exclusion is
-structural, not flag-dependent. The 2×2 and verdict recompute
+structural: an exclude-all context config on the judge's reading, pinned in its content hash. The 2×2 and verdict recompute
 offline from the committed rows (`compute_anchor`/`evaluate_decision` → A,B,C,D = 9,10,5,76 →
 `NOT_SUPPORTED`), no live judge needed. `PRE_REGISTRATION.md` is frozen; the single correction is
 disclosed as a post-hoc amendment (A1).

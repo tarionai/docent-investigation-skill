@@ -3,6 +3,44 @@
 Notable changes to `docent-investigation-skill`, newest first. Dates are UTC. Older entries are
 preserved, not edited — corrections are recorded as new entries.
 
+## 2026-07-10 — Migrate evaluation to Docent's Readings API (Analysis Plans)
+
+Transluce no longer recommends rubric refinement as the primary workflow, so evaluation now runs on
+the Readings surface (`client.query` + `client.read`), which submits a native analysis plan. The
+measurement layer (anchor, fidelity, pre-registration semantics) is unchanged. Historical reports and
+`PRE_REGISTRATION.md` describe the reference run as executed and are not edited.
+
+### Changed
+- `DocentClientAdapter`: `create_rubric` / `start_rubric_eval_job` / `get_rubric_run_state` /
+  `wait_for_verdicts` replaced by `evaluate_rubric()` — one DQL step + one blind reading per run,
+  programmatic approval (`flush(auto_approve=True)`), blocks until verdicts land, returns
+  `(reading_id, verdicts)`. Resume via `verdicts_from_reading()`; `run_investigation.py` gains
+  `--model` and `--reading-id` (replacing `--rubric-id`).
+- Blindness invariant: `include_metadata=False` replaced by an explicit exclude-all
+  `AgentRunContextConfig` (`blind_run_context()`) on the judge's agent-run parameter. Stronger than
+  the old flag: exclude-all is both the SDK default and pinned by the adapter, and the config enters
+  the reading's content hash — weakening it produces a visibly different reading, not a silent leak.
+- `rubric.py` decoupled from `docent.judges`: the rubric is a local frozen `RubricSpec` (same frozen
+  text/labels/schema); the judge model is now explicit (`DEFAULT_JUDGE_MODEL = "openai/gpt-5.5"`) and
+  recorded in `results.json` as part of the instrument's identity.
+- M1 canary ported: the offline render check is unchanged (readings use the same rendering layer);
+  the live check runs through `evaluate_rubric`; a new tripwire test asserts the SDK's default
+  context config still excludes every metadata scope, so an upstream default flip fails the suite.
+
+### Added
+- Bounded retry for the server's fresh-collection statement timeout (DQL on a just-ingested
+  collection 400s for its first ~30s; observed and measured 2026-07-10). Only that specific error
+  retries; anything else re-raises immediately.
+
+### Verified
+- 34 tests pass including the LIVE canary against docent.transluce.org: the judge echoed the
+  message-content sentinel and never surfaced the `metadata.scores` oracle sentinel through the new
+  reading path.
+
+### Resolved (was open in the 2026-06-29 entry)
+- Docent-native Analysis Plan view: evaluation now submits a native analysis plan visible in the
+  collection's web UI.
+
 ## 2026-06-29 (later) — Citation audit, convergence remediation, metadata-leak canary
 
 ### Added

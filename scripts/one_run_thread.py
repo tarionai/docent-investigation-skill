@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 from docent_investigation.docent_client import DocentClientAdapter
-from docent_investigation.rubric import false_success_rubric
+from docent_investigation.rubric import DEFAULT_JUDGE_MODEL, false_success_rubric
 from docent_investigation.transform import load_oracle, openhands_record_to_agent_run
 
 
@@ -19,6 +19,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", default="data", help="dir holding records/ and oracle_summary.json")
     parser.add_argument("--name", default="docent-investigation: one-run slice")
+    parser.add_argument("--model", default=DEFAULT_JUDGE_MODEL, help="judge model (provider/model_name)")
     args = parser.parse_args()
 
     data_dir = Path(args.data)
@@ -32,9 +33,10 @@ def main() -> None:
     collection_id = adapter.create_collection(args.name, f"one-run slice: {instance_id}")
     adapter.ingest(collection_id, [run])
     public_url = adapter.make_public(collection_id)
-    rubric_id = adapter.create_rubric(collection_id, false_success_rubric())
-    adapter.evaluate(collection_id, rubric_id, max_agent_runs=1)
-    verdicts = adapter.wait_for_verdicts(collection_id, rubric_id, expected=1, timeout_s=300)
+    adapter.set_plan_name("one-run false-success slice")
+    _, verdicts = adapter.evaluate_rubric(
+        collection_id, false_success_rubric(), model=args.model, max_agent_runs=1
+    )
 
     print(f"instance_id     : {instance_id}")
     print(f"oracle          : {oracle.get(instance_id)}")
@@ -43,7 +45,7 @@ def main() -> None:
         print(f"rubric_label    : {verdicts[0].label}")
         print(f"explanation     : {verdicts[0].explanation[:300]}")
     else:
-        print("rubric_label    : <no verdict returned within timeout>")
+        print("rubric_label    : <reading returned no usable verdict>")
 
 
 if __name__ == "__main__":

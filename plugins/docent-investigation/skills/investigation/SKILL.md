@@ -19,9 +19,12 @@ them; `.mcp.local.json` / `docent.env*` are forbidden by `tools/plugin_sanity.py
 ## The one rule that makes it honest
 
 **The rubric judge must be blind to the oracle.** Store the resolution label (e.g. resolved/unresolved) only in
-`AgentRun.metadata`, and always evaluate with `include_metadata=False`. Pre-register the rubric and the
-decision thresholds *before* looking at results (see `oracle-anchor.md`). If you skip this, you have a
-circular demo, not a measurement.
+`AgentRun.metadata`, and always evaluate through the adapter's blind reading path: the judge runs as a
+Docent reading whose agent-run parameter renders under an exclude-all context config
+(`docent_client.blind_run_context()`), so no metadata scope ever reaches the prompt — and the config is
+part of the reading's content hash, so weakening it produces a visibly different reading, not a silent
+leak. Pre-register the rubric and the decision thresholds *before* looking at results (see
+`oracle-anchor.md`). If you skip this, you have a circular demo, not a measurement.
 
 ## Procedure
 
@@ -59,17 +62,21 @@ A working transform for OpenHands SWE-bench traces lives in `docent_investigatio
 a template for other scaffolds. `scripts/fetch_traces.py` pulls a public trace set + its oracle.
 
 ### 3. Author the rubric (blind to the oracle)
-See `rubric-reference.md` for the exact SDK calls and the frozen reference rubric. In short:
-```python
-from docent_investigation.rubric import false_success_rubric
-rubric_id = adapter.create_rubric(cid, false_success_rubric())
-```
+See `rubric-reference.md` for the reading-based evaluation and the frozen reference rubric. A rubric is a
+`RubricSpec` — prompt text + structured-output schema (enum label, cited explanation) — defined in
+`docent_investigation.rubric`.
 
-### 4. Evaluate — judge stays blind
+### 4. Evaluate — one blind reading per run
 ```python
-adapter.evaluate(cid, rubric_id, max_agent_runs=N)    # forces include_metadata=False
-verdicts = adapter.wait_for_verdicts(cid, rubric_id, expected=N)
+from docent_investigation.rubric import DEFAULT_JUDGE_MODEL, false_success_rubric
+reading_id, verdicts = adapter.evaluate_rubric(
+    cid, false_success_rubric(), model=DEFAULT_JUDGE_MODEL, max_agent_runs=N
+)
 ```
+This submits a Docent analysis plan — one DQL step selecting the runs, one reading step judging each —
+approves it programmatically, and blocks until verdicts land. Each run renders under the exclude-all
+context config, so the judge never sees `AgentRun.metadata`. Readings are content-addressed:
+re-running the identical rubric/model over the same runs is a free cache hit.
 
 ### 5. Measure flag-frequency and anchor against the oracle
 ```python
@@ -103,5 +110,7 @@ aside — never conjoin them. Name the blind spot: the oracle validates the *out
 label fidelity (report the `label_fidelity` signals from step 6). Do not round a `NOT_SUPPORTED`
 estimand up to a finding just because the association is significant.
 
-The whole pipeline is driven end-to-end by `scripts/run_investigation.py` (with a `--collection-id`
-resume path), and the worked reference investigation is summarized in `reports/INVESTIGATION_REPORT.md`.
+The whole pipeline is driven end-to-end by `scripts/run_investigation.py` (resume with
+`--collection-id` to skip ingest — an identical rubric/model re-run is a free cache hit — or
+`--collection-id --reading-id` to fetch existing verdicts without a new plan), and the worked reference
+investigation is summarized in `reports/INVESTIGATION_REPORT.md`.

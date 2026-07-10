@@ -9,7 +9,20 @@ the same definition.
 
 from __future__ import annotations
 
-from docent.judges.types import Rubric
+from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True)
+class RubricSpec:
+    """A rubric as a reading instrument: prompt text + structured-output schema. The judge model is
+    supplied at evaluation time but is part of the instrument's identity (it enters the reading's
+    content hash) — record it alongside results."""
+
+    text: str
+    output_schema: dict = field(default_factory=dict)
+
+
+DEFAULT_JUDGE_MODEL = "openai/gpt-5.5"
 
 LABEL_DECLARED = "declared_success"
 LABEL_NOT_DECLARED = "not_declared"
@@ -43,6 +56,6 @@ OUTPUT_SCHEMA = {
 }
 
 
-def false_success_rubric() -> Rubric:
+def false_success_rubric() -> RubricSpec:
     """Build the frozen false-success-declaration rubric."""
-    return Rubric(rubric_text=RUBRIC_TEXT, output_schema=OUTPUT_SCHEMA)
+    return RubricSpec(text=RUBRIC_TEXT, output_schema=OUTPUT_SCHEMA)

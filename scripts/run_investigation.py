@@ -1,8 +1,12 @@
-"""Batch investigation (live): ingest N runs -> rubric eval -> oracle cross-tab anchor.
+"""Batch investigation (live): ingest N runs -> blind rubric reading -> oracle cross-tab anchor.
 
 Requires DOCENT_API_KEY / DOCENT_DOMAIN. Run scripts/fetch_traces.py --n N first. Writes
 data/results.json (collection URL, per-run rows, anchor stats, verdict) and prints the 2x2, the
 estimands with intervals, the association, and the pre-registered verdict.
+
+Resume: --collection-id skips ingest and re-submits the reading (content-addressed, so an identical
+rubric/model over the same runs is a free cache hit); --collection-id + --reading-id fetches the
+existing results without submitting a new plan.
 """
 
 from __future__ import annotations
@@ -14,8 +18,8 @@ from pathlib import Path
 from docent_investigation.anchor import Row, compute_anchor, evaluate_decision
 from docent_investigation.fidelity import label_fidelity
 from docent_investigation.batch import build_runs, join_rows, load_records
-from docent_investigation.docent_client import DocentClientAdapter, extract_verdicts
-from docent_investigation.rubric import false_success_rubric
+from docent_investigation.docent_client import DocentClientAdapter
+from docent_investigation.rubric import DEFAULT_JUDGE_MODEL, false_success_rubric
 from docent_investigation.transform import load_oracle
 
 
@@ -24,19 +28,19 @@ def main() -> None:
     parser.add_argument("--data", default="data")
     parser.add_argument("--n", type=int, default=100)
     parser.add_argument("--name", default="docent-investigation: false-success on SWE-bench Verified")
-    parser.add_argument("--collection-id", default=None, help="resume an existing collection (skip ingest/eval)")
-    parser.add_argument("--rubric-id", default=None, help="rubric id when resuming")
+    parser.add_argument("--model", default=DEFAULT_JUDGE_MODEL, help="judge model (provider/model_name)")
+    parser.add_argument("--collection-id", default=None, help="reuse an existing collection (skip ingest)")
+    parser.add_argument("--reading-id", default=None, help="fetch existing reading results when resuming")
     args = parser.parse_args()
 
     data_dir = Path(args.data)
     adapter = DocentClientAdapter()
+    adapter.set_plan_name("false-success rubric anchor")
 
     if args.collection_id:
         collection_id = args.collection_id
         public_url = adapter.make_public(collection_id)
-        rubric_id = args.rubric_id or adapter.list_rubric_ids(collection_id)[0]
-        verdicts = extract_verdicts(adapter.read_run_state(collection_id, rubric_id))
-        n_ingested = len(verdicts)
+        n_ingested = args.n
     else:
         records = load_records(data_dir, args.n)
         oracle = load_oracle(data_dir / "oracle_summary.json")
@@ -44,11 +48,18 @@ def main() -> None:
         collection_id = adapter.create_collection(args.name, f"N={len(runs)} OpenHands Verified runs")
         adapter.ingest(collection_id, runs)
         public_url = adapter.make_public(collection_id)
-        rubric_id = adapter.create_rubric(collection_id, false_success_rubric())
-        adapter.evaluate(collection_id, rubric_id, max_agent_runs=len(runs))
-        print(f"public_url: {public_url}\nwaiting for {len(runs)} verdicts ...")
-        verdicts = adapter.wait_for_verdicts(collection_id, rubric_id, expected=len(runs), timeout_s=1800)
         n_ingested = len(runs)
+
+    if args.reading_id:
+        if not args.collection_id:
+            parser.error("--reading-id requires --collection-id")
+        reading_id = args.reading_id
+        verdicts = adapter.verdicts_from_reading(collection_id, reading_id)
+    else:
+        print(f"public_url: {public_url}\nsubmitting blind rubric reading for {n_ingested} runs ...")
+        reading_id, verdicts = adapter.evaluate_rubric(
+            collection_id, false_success_rubric(), model=args.model, max_agent_runs=n_ingested
+        )
 
     rows = join_rows(adapter, collection_id, verdicts)
     stats = compute_anchor([Row(r["instance_id"], r["resolved"], r["rubric_label"]) for r in rows])
@@ -57,7 +68,8 @@ def main() -> None:
     out = {
         "collection_url": public_url,
         "collection_id": collection_id,
-        "rubric_id": rubric_id,
+        "reading_id": reading_id,
+        "judge_model": args.model,
         "n_ingested": n_ingested,
         "n_verdicts": len(rows),
         "rows": rows,

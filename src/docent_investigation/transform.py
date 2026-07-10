@@ -1,8 +1,9 @@
 """Pure transform: OpenHands SWE-bench trace records -> Docent AgentRun objects.
 
 Side-effect-free. No network, no clock, no file writes (except `load_oracle`, which only reads).
-The judge must stay blind to the oracle, so eval is run with include_metadata=False; the oracle is
-still stored in AgentRun.metadata for the public collection UI and for the local cross-tab in N5.
+The judge must stay blind to the oracle, so the rubric reading renders runs under an exclude-all
+context config (docent_client.blind_run_context); the oracle is still stored in AgentRun.metadata
+for the public collection UI and for the local cross-tab in N5.
 """
 
 from __future__ import annotations

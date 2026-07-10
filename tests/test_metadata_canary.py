@@ -1,7 +1,9 @@
 """Canary (M1): prove the resolution oracle in AgentRun.metadata never reaches the judge.
 
 The non-circularity guarantee rests on the judge being blind to the oracle, which is stored at
-metadata.scores.resolved (see transform.openhands_record_to_agent_run). Two complementary checks:
+metadata.scores.resolved (see transform.openhands_record_to_agent_run). The judge runs as a Docent
+reading whose agent_run parameter is rendered under an exclude-all context config
+(docent_client.blind_run_context). Two complementary checks:
 
 1. test_oracle_excluded_from_judge_text (OFFLINE, deterministic): renders the agent run exactly as the
    judge sees it (docent's own AgentRunView.to_text). Under the default context config every metadata
@@ -12,14 +14,14 @@ metadata.scores.resolved (see transform.openhands_record_to_agent_run). Two comp
 
 2. test_server_honors_oracle_exclusion (LIVE, billable; skipped without DOCENT_API_KEY): one run carries
    two sentinels — one in a user MESSAGE (always visible to the judge) and one in metadata.scores. After
-   a real server eval with include_metadata=False, the message sentinel MUST appear in the verdict (the
-   judge echoes what it can see — the live positive control) and the metadata sentinel MUST NOT. That the
-   judge surfaces the visible one but not the metadata one is direct end-to-end evidence the server does
-   not feed metadata.scores to the judge.
+   a real reading evaluated through adapter.evaluate_rubric (blind context config), the message sentinel
+   MUST appear in the verdict (the judge echoes what it can see — the live positive control) and the
+   metadata sentinel MUST NOT. That the judge surfaces the visible one but not the metadata one is direct
+   end-to-end evidence the server does not feed metadata.scores to the judge.
 
-Note (observed 2026-06-29): even an eval with include_metadata=True did not surface agent-run
-metadata.scores to the judge — consistent with AgentRunContextConfig defaulting agent_run_metadata to
-EXCLUDE_ALL. The oracle's exclusion is therefore structural, stronger than a flag toggle.
+The exclusion is structural twice over: exclude-all is both the SDK default (guarded by
+test_sdk_default_context_still_excludes_metadata) and pinned explicitly by the adapter, where it enters
+the reading's content hash — weakening it produces a different reading, not a silent leak.
 """
 
 from __future__ import annotations
@@ -34,9 +36,9 @@ from docent.data_models.agent_run import AgentRunView
 from docent.data_models.chat import AssistantMessage, UserMessage
 from docent.data_models.context_config import AgentRunContextConfig
 from docent.data_models.metadata_util import INCLUDE_ALL_GLOB_FILTER
-from docent.judges.types import Rubric
 
 from docent_investigation.docent_client import DocentClientAdapter
+from docent_investigation.rubric import DEFAULT_JUDGE_MODEL, RubricSpec
 
 
 def _run_with_oracle_sentinel(oracle_token: str, content_token: str | None = None) -> AgentRun:
@@ -100,8 +102,9 @@ CANARY_SCHEMA = {
 
 @pytest.mark.skipif(not os.environ.get("DOCENT_API_KEY"), reason="live canary needs DOCENT_API_KEY")
 def test_server_honors_oracle_exclusion():
-    """End-to-end: after a real eval with include_metadata=False, the judge echoes the message-content
-    sentinel (proving it cooperates) but never the metadata.scores sentinel (the guarantee)."""
+    """End-to-end: after a real reading under the blind context config, the judge echoes the
+    message-content sentinel (proving it cooperates) but never the metadata.scores sentinel (the
+    guarantee)."""
     oracle_token = "CANARY_meta_" + secrets.token_hex(8)
     content_token = "CANARY_msg_" + secrets.token_hex(8)
     run = _run_with_oracle_sentinel(oracle_token, content_token=content_token)
@@ -109,9 +112,13 @@ def test_server_honors_oracle_exclusion():
     adapter = DocentClientAdapter()
     cid = adapter.create_collection("m1-oracle-canary", "M1 oracle-exclusion canary")
     adapter.ingest(cid, [run])
-    rubric_id = adapter.create_rubric(cid, Rubric(rubric_text=CANARY_RUBRIC_TEXT, output_schema=CANARY_SCHEMA))
-    adapter.evaluate(cid, rubric_id, max_agent_runs=1)  # include_metadata=False
-    verdicts = adapter.wait_for_verdicts(cid, rubric_id, expected=1)
+    adapter.set_plan_name("m1-oracle-canary")
+    _, verdicts = adapter.evaluate_rubric(
+        cid,
+        RubricSpec(text=CANARY_RUBRIC_TEXT, output_schema=CANARY_SCHEMA),
+        model=DEFAULT_JUDGE_MODEL,
+        max_agent_runs=1,
+    )
     assert verdicts, "no verdict returned"
     text = " ".join(f"{v.label} {v.explanation}" for v in verdicts)
 
