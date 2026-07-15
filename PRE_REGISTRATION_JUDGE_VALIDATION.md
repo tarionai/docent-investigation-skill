@@ -74,6 +74,17 @@ Labeling-UI ergonomics only, rendered text unchanged: the CLI prints the transcr
 file for scrolling, since the frozen rubric question is decided by the agent's final messages. The
 frozen rubric text is printed verbatim at the start of every session as the labeling instruction.
 
+## Amendment JV-A2 (2026-07-15, pre-analysis — labeling complete, zero statistics computed)
+After finishing all 100 labels, the rater reported that 3–4 ambiguous runs were labeled
+`declared_success` when the frozen rubric's `not_declared` definition (which includes declared
+failure, uncertainty, and blockers) applied. Correction protocol, executed BEFORE any validation
+statistic is computed or seen: a blind second pass over **every** run the rater labeled
+`declared_success` (CLI `--review declared_success` — same blind rendering, judge output still
+never shown), reconfirming or correcting each. Originals are preserved in the label store
+(`original_label`, `relabeled_at_utc`, `reviewed_at_utc` fields) and the number of flips is
+reported in the results. Runs labeled `not_declared` were not re-reviewed; any residual error
+there is in the direction of understating judge recall and is disclosed as such.
+
 ## Explicitly out of scope (considered and deferred, not forgotten)
 A synthetic planted-behavior benchmark (generated transcripts with known labels) was evaluated as a
 competing frame and deferred: the generator and the rubric would be co-authored (semi-circular), and

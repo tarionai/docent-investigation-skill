@@ -66,6 +66,33 @@ def _present_run(record: dict, position: str, view_path: Path, tail: int) -> Non
     print(f"\n[shown: final {len(shown)} of {len(lines)} lines -- full blind transcript: {view_path}]")
 
 
+def _review_pending(store: dict, rater: str, review_label: str, order: list[str]) -> list[str]:
+    labeled = {e["instance_id"]: e for e in store["labels"] if e["rater_id"] == rater}
+    return [i for i in order if i in labeled and labeled[i]["label"] == review_label]
+
+
+def _record(store: dict, instance_id: str, rater: str, label: str, order_index: int,
+            review: bool) -> None:
+    """Append a fresh label, or — in review mode — update in place with a full audit trail."""
+    now = datetime.now(timezone.utc).isoformat()
+    if review:
+        entry = next(e for e in store["labels"]
+                     if e["instance_id"] == instance_id and e["rater_id"] == rater)
+        entry["reviewed_at_utc"] = now
+        if label != entry["label"]:
+            entry.setdefault("original_label", entry["label"])
+            entry["label"] = label
+            entry["relabeled_at_utc"] = now
+        return
+    store["labels"].append({
+        "instance_id": instance_id,
+        "label": label,
+        "rater_id": rater,
+        "labeled_at_utc": now,
+        "order_index": order_index,
+    })
+
+
 def _ask_label() -> str | None:
     """Return a label, 'skip', or None to quit."""
     while True:
@@ -91,6 +118,9 @@ def main() -> None:
                         help="terminal shows the final N transcript lines (0 = all)")
     parser.add_argument("--view-file", default="data/rater_view.txt",
                         help="full blind transcript of the current run is written here")
+    parser.add_argument("--review", metavar="LABEL", default=None,
+                        help="re-present this rater's runs currently labeled LABEL (blind), "
+                             "reconfirm or correct each; originals kept as audit trail")
     args = parser.parse_args()
 
     entries = _load_manifest(Path(args.manifest))
@@ -98,8 +128,12 @@ def main() -> None:
     store = _load_store(out_path, args.seed)
     done = {label["instance_id"] for label in store["labels"] if label["rater_id"] == args.rater}
     order = presentation_order(list(entries), args.seed)
-    pending = [i for i in order if i not in done]
-    print(f"rater={args.rater}  labeled={len(done)}  pending={len(pending)}  seed={args.seed}")
+    if args.review:
+        pending = _review_pending(store, args.rater, args.review, order)
+        print(f"rater={args.rater}  REVIEW of label {args.review!r}: {len(pending)} runs  seed={args.seed}")
+    else:
+        pending = [i for i in order if i not in done]
+        print(f"rater={args.rater}  labeled={len(done)}  pending={len(pending)}  seed={args.seed}")
     print("\nLabeling instruction (the frozen rubric, applied verbatim):\n\n" + RUBRIC_TEXT)
 
     for instance_id in pending:
@@ -111,13 +145,8 @@ def main() -> None:
             break
         if label == "skip":
             continue
-        store["labels"].append({
-            "instance_id": instance_id,
-            "label": label,
-            "rater_id": args.rater,
-            "labeled_at_utc": datetime.now(timezone.utc).isoformat(),
-            "order_index": order.index(instance_id),
-        })
+        _record(store, instance_id, args.rater, label, order.index(instance_id),
+                review=bool(args.review))
         out_path.write_text(json.dumps(store, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(f"saved -> {out_path} ({len(store['labels'])} labels total)")

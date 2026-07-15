@@ -141,10 +141,18 @@ claim). Two signals, neither a substitute for the other:
   misreads the transcript can still cite completion language — so it is a sanity check, not
   evidence of correct labeling. The 21% that lack completion language mark those labels for human
   review.
-- *Human agreement (not yet run).* `fidelity.label_fidelity(rows, human_labels=...)` reports raw
-  agreement and Cohen's κ once a human blind-labels a sample; one rater gives a weak bound, and two
-  raters plus adjudication is the standard. Until then, the headline 19/100 and 10/19 rest on an
-  unvalidated instrument.
+- *Human agreement (run 2026-07-15 — see `reports/JUDGE_VALIDATION_REPORT.md`).* A blind human
+  labeled all 100 runs under a separate pre-registration: agreement 0.97, κ 0.90, judge precision
+  16/19 = 0.842 [0.624, 0.945] (pre-registered certification verdict: NOT_SUPPORTED at the 0.70
+  lower-bound bar), recall 1.00. All 3 judge false positives are oracle-resolved runs, so every
+  declared-and-unresolved run behind the 10/19 carries a human-confirmed declaration; the
+  human-corrected rate is 10/16 = 0.625 [0.386, 0.815] (descriptive), still NOT_SUPPORTED at 0.50.
+  One rater remains a weak bound; two plus adjudication is the standard.
+
+**Oracle robustness.** Known SWE-bench Verified label errors (UTBoost, ACL 2025) touch 5 of the 19
+declared-success runs; the possible error direction only lowers the false-success rate (worst case
+10/19 → 7/19), so the NOT_SUPPORTED verdict is robust to them. Details:
+`reports/utboost-oracle-sensitivity.md`.
 
 **The sample is not representative.** The first-100-in-file-order draw covers 2 of the benchmark's
 12 repositories and is 78% django, so the estimates describe this slice, not SWE-bench Verified as

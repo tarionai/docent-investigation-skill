@@ -14,4 +14,5 @@ docs/publication/
 docs/plans/
 # Transluce priorities/gaps strategy analyses: local-only, never publish
 reports/transluce-priorities-and-gaps.md
-reports/gap*-strategy-*.md
+reports/gap*.md
+reports/HANDOVER-gap*.md

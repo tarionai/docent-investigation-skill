@@ -3,6 +3,18 @@
 Notable changes to `docent-investigation-skill`, newest first. Dates are UTC. Older entries are
 preserved, not edited — corrections are recorded as new entries.
 
+## 2026-07-15 — Judge-validation study executed: NOT_SUPPORTED at the pre-registered bar (v2.0)
+
+All 100 pinned runs blind-labeled by one rater (100/100, zero skips; review pass JV-A2 flipped 3
+ambiguous positives, audit trail in `reports/human_labels.json`). Pre-registered verdict on judge
+precision: **NOT_SUPPORTED** — 16/19 = 0.842, Wilson 95% [0.624, 0.945], lower bound under the
+frozen 0.70 bar (which required ≥18/19). Descriptive: recall 1.00, agreement 0.97, κ 0.90; all 3
+judge false positives are oracle-resolved runs, so the v1 declared-and-failed cell is fully
+human-confirmed. Full report: `reports/JUDGE_VALIDATION_REPORT.md`. Also added
+`reports/utboost-oracle-sensitivity.md`: known SWE-bench Verified label errors (UTBoost) can only
+lower the v1 false-success rate (worst case 10/19 → 7/19), so both verdicts are robust to them.
+Labeling CLI gained `--review LABEL` (blind re-review with in-store audit trail).
+
 ## 2026-07-15 — Judge validation becomes the primary product (step-6 inversion)
 
 The pipeline's sidecar label-fidelity check is promoted to the deliverable: the rubric judge is now
