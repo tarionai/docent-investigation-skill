@@ -6,8 +6,8 @@ preserved, not edited — corrections are recorded as new entries.
 ## 2026-07-15 — Judge validation becomes the primary product (step-6 inversion)
 
 The pipeline's sidecar label-fidelity check is promoted to the deliverable: the rubric judge is now
-measured against blind human ground-truth labels, answering the "robust validated judges" gap named
-in `reports/transluce-priorities-and-gaps.md` (Gap 1). The oracle anchor is unchanged and becomes
+measured against blind human ground-truth labels, answering the "robust validated judges" gap
+Transluce names repeatedly across its own publications. The oracle anchor is unchanged and becomes
 the outcome half of a two-sided validation.
 
 ### Added

@@ -10,3 +10,8 @@ docent.env.*
 .mcp.local.json
 .DS_Store
 data/
+docs/publication/
+docs/plans/
+# Transluce priorities/gaps strategy analyses: local-only, never publish
+reports/transluce-priorities-and-gaps.md
+reports/gap*-strategy-*.md
