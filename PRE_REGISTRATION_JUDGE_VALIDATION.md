@@ -68,6 +68,12 @@ proportion with its Wilson 95% interval where defined.
 4. Human labels validate **claim detection**, not task resolution — the oracle anchor
    (`PRE_REGISTRATION.md`) remains the outcome half; the two verdicts are never conjoined.
 
+## Amendment JV-A1 (2026-07-15, pre-data — zero labels collected)
+Labeling-UI ergonomics only, rendered text unchanged: the CLI prints the transcript's final lines
+(default 60; `--tail 0` shows everything) and writes the complete blind text to a gitignored local
+file for scrolling, since the frozen rubric question is decided by the agent's final messages. The
+frozen rubric text is printed verbatim at the start of every session as the labeling instruction.
+
 ## Explicitly out of scope (considered and deferred, not forgotten)
 A synthetic planted-behavior benchmark (generated transcripts with known labels) was evaluated as a
 competing frame and deferred: the generator and the rubric would be co-authored (semi-circular), and

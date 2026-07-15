@@ -1,10 +1,15 @@
 """Blind labeling CLI: collect human ground-truth labels for the judge-validation study.
 
 Sole writer of reports/human_labels.json; this script reads NO judge output, so the rater cannot be
-influenced by it (enforced by tests/test_rater_blindness.py). Each pinned run is shown exactly as
+influenced by it (enforced by tests/test_rater_blindness.py). Each pinned run is rendered exactly as
 the blind judge saw it (transform.record_to_blind_text), in a seeded shuffled order, and the store
 is rewritten after every label so a session can stop and resume at any point. A second rater runs
 the same command with a different --rater. Protocol: PRE_REGISTRATION_JUDGE_VALIDATION.md.
+
+Transcripts run thousands of lines, and the rubric question is decided by the agent's FINAL
+messages, so the terminal shows only the transcript tail (--tail, 0 = everything); the complete
+blind text is written to --view-file (default under gitignored data/) for scrolling when the tail
+is ambiguous. The rendered text itself is identical either way.
 """
 
 from __future__ import annotations
@@ -16,7 +21,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from docent_investigation.rubric import LABEL_DECLARED, LABEL_NOT_DECLARED
+from docent_investigation.rubric import LABEL_DECLARED, LABEL_NOT_DECLARED, RUBRIC_TEXT
 from docent_investigation.transform import record_to_blind_text
 from docent_investigation.validation import presentation_order
 
@@ -47,6 +52,20 @@ def _read_record(records_dir: Path, entry: dict) -> dict:
     return json.loads(raw.decode("utf-8"))
 
 
+def _present_run(record: dict, position: str, view_path: Path, tail: int) -> None:
+    """Write the full blind text to view_path and print its tail (or all of it when tail <= 0)."""
+    text = record_to_blind_text(record)
+    view_path.parent.mkdir(parents=True, exist_ok=True)
+    view_path.write_text(text, encoding="utf-8")
+    lines = text.splitlines()
+    shown = lines if tail <= 0 or tail >= len(lines) else lines[-tail:]
+    print("\n" + "=" * 78 + f"\nrun {position}\n" + "=" * 78)
+    if len(shown) < len(lines):
+        print(f"[... {len(lines) - len(shown)} earlier lines omitted -- full transcript: {view_path}]\n")
+    print("\n".join(shown))
+    print(f"\n[shown: final {len(shown)} of {len(lines)} lines -- full blind transcript: {view_path}]")
+
+
 def _ask_label() -> str | None:
     """Return a label, 'skip', or None to quit."""
     while True:
@@ -68,6 +87,10 @@ def main() -> None:
     parser.add_argument("--out", default="reports/human_labels.json")
     parser.add_argument("--rater", required=True, help="rater id recorded with every label")
     parser.add_argument("--seed", type=int, default=20260715, help="pre-registered shuffle seed")
+    parser.add_argument("--tail", type=int, default=60,
+                        help="terminal shows the final N transcript lines (0 = all)")
+    parser.add_argument("--view-file", default="data/rater_view.txt",
+                        help="full blind transcript of the current run is written here")
     args = parser.parse_args()
 
     entries = _load_manifest(Path(args.manifest))
@@ -77,11 +100,12 @@ def main() -> None:
     order = presentation_order(list(entries), args.seed)
     pending = [i for i in order if i not in done]
     print(f"rater={args.rater}  labeled={len(done)}  pending={len(pending)}  seed={args.seed}")
+    print("\nLabeling instruction (the frozen rubric, applied verbatim):\n\n" + RUBRIC_TEXT)
 
     for instance_id in pending:
         record = _read_record(Path(args.data) / "records", entries[instance_id])
-        print("\n" + "=" * 78 + f"\nrun {order.index(instance_id) + 1}/{len(order)}\n" + "=" * 78)
-        print(record_to_blind_text(record))
+        _present_run(record, f"{order.index(instance_id) + 1}/{len(order)}",
+                     Path(args.view_file), args.tail)
         label = _ask_label()
         if label is None:
             break
