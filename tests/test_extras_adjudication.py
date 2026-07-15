@@ -178,6 +178,16 @@ def test_stratum_stats_treat_unsure_as_coverage():
     assert stratum_tp_stats(["unsure"])["rate"] is None
 
 
+def test_other_concern_is_a_valid_blind_label_but_never_a_true_positive():
+    # Amendment EA-A1: estimand-preserving -- other_concern is definite, counted like none
+    stats = stratum_tp_stats(["other_concern", "fabrication"])
+    assert (stats["n_definite"], stats["tp"]) == (2, 1)
+    assert stats["rate"] == pytest.approx(0.5)
+    store = new_store(20260715)
+    entry = record_blind_label(store, "h001", "ed", "other_concern", 0, NOW)
+    assert entry["label"] == "other_concern"
+
+
 def test_pooled_estimate_weights_by_queue_share_with_census_zero_variance():
     sizes = {"a": 90, "b": 10}
     stats = {"a": stratum_tp_stats(["fabrication"] * 9 + ["none"]),
