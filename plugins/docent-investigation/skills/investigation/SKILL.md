@@ -90,17 +90,28 @@ decision = evaluate_decision(stats)                   # verdict on the primary e
 95% interval**, and a Fisher exact p-value. `evaluate_decision` applies your pre-registered rule on the
 primary estimand and returns the verdict (`oracle-anchor.md`).
 
-### 6. Check label fidelity (audit the instrument, not just the outcome)
-The oracle validates outcomes; it says nothing about whether the rubric *labeled* correctly. Run the
-label-fidelity check and report it honestly:
-```python
-from docent_investigation.fidelity import label_fidelity
-fid = label_fidelity(rows)            # rows from join_rows carry the judge's cited explanation
-```
-`judge_self_consistency` (do `declared_success` citations contain completion language?) is a **weak
-self-consistency sanity check — never report it as fidelity.** The real measure is human agreement:
-blind-label a sample by hand and pass `human_labels=` to get raw agreement + Cohen's κ (one rater is a
-weak bound; two + adjudication is the standard). Always surface `fid.disclosure`.
+### 6. Validate the judge itself (the instrument half — a study of its own)
+The oracle validates outcomes; it says nothing about whether the rubric *labeled* correctly. That
+question gets its own pre-registered study, not a sidecar check: measure the judge against **blind
+human ground-truth labels** and report precision/recall with intervals. This is the half that makes
+the whole investigation a validated instrument rather than an unaudited one.
+
+1. **Pre-register the validation first** (`PRE_REGISTRATION_JUDGE_VALIDATION.md`): sample, rater
+   protocol, shuffle seed, ONE primary estimand (judge precision) + threshold with its reachability
+   disclosed, adjudication rule — committed before any label exists.
+2. **Collect labels blind**: `scripts/label_runs.py --rater <id>` shows each pinned run exactly as
+   the blind judge saw it (`transform.record_to_blind_text` — same exclude-all rendering, proven by
+   `tests/test_rater_blindness.py`), in a seeded shuffled order, never showing judge output or
+   oracle. Resumable; a second rater is the same command with a different `--rater`.
+3. **Compute the verdict**: `scripts/run_judge_validation.py` joins judge labels to human consensus
+   (`validation.consensus_labels`), computes the confusion matrix, precision/recall with Wilson 95%
+   intervals, agreement and Cohen's κ (`validation.compute_validation`), and applies the
+   pre-registered rule (`validation.evaluate_judge_decision`) — fully offline from tracked artifacts.
+
+`judge_self_consistency` from `fidelity.label_fidelity(rows)` (do `declared_success` citations
+contain completion language?) is a **weak self-consistency sanity check — never report it as
+fidelity.** One rater is a weak bound; two + adjudication is the standard. Always surface the
+disclosure fields, including any rater-contamination caveat from the pre-registration.
 
 ### 7. Report honestly
 State the flag-frequency, the 2×2, and the metrics. Report **two results separately**: the

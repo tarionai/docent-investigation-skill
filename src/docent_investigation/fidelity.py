@@ -38,7 +38,7 @@ def _has_completion_language(text: str) -> bool:
     return bool(_TERM_RE.search(text or ""))
 
 
-def _cohen_kappa(pairs: list[tuple[str, str]]) -> float | None:
+def cohen_kappa(pairs: list[tuple[str, str]]) -> float | None:
     """Cohen's kappa for two raters over paired categorical labels."""
     n = len(pairs)
     if n == 0:
@@ -84,7 +84,7 @@ def label_fidelity(rows: list[dict], human_labels: dict[str, str] | None = None)
     )
     if pairs:
         agreement = sum(a == b for a, b in pairs) / len(pairs)
-        kappa = _cohen_kappa(pairs)
+        kappa = cohen_kappa(pairs)
     return LabelFidelity(
         n_declared=len(declared),
         judge_self_consistency=self_consistency,

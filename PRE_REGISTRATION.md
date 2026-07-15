@@ -59,6 +59,11 @@ the frozen rule above.** The worked run's verdict under the corrected rule is th
   `resolved_rate_declared` vs `resolved_rate_not_declared`) is reported **separately** and never folded
   into the verdict.
 
+## Amendment A2 (2026-07-15) — limitation #1 vNext opened
+The deferred human-label validation of the rubric judge is now pre-registered separately in
+`PRE_REGISTRATION_JUDGE_VALIDATION.md` (frozen before any human label is collected). This document
+remains unchanged.
+
 ## Stated limitations (pre-committed, not excuses added later)
 1. The oracle is ground truth for **resolution**, not for the rubric's claim-detection fidelity. This
    anchor validates the operational finding (declared-success vs actual resolution), not whether the

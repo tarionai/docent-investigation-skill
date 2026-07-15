@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 from docent.data_models import AgentRun, Transcript
+from docent.data_models.agent_run import AgentRunView
 from docent.data_models.chat import (
     AssistantMessage,
     ChatMessage,
@@ -21,6 +22,7 @@ from docent.data_models.chat import (
     UserMessage,
 )
 
+from .docent_client import blind_run_context
 from .types import OracleLabel
 
 
@@ -93,6 +95,17 @@ def openhands_record_to_agent_run(record: dict, oracle: OracleLabel | None = Non
         transcripts=[Transcript(name=instance_id, messages=messages, metadata={})],
         metadata=metadata,
     )
+
+
+def record_to_blind_text(record: dict) -> str:
+    """Render one raw trace record exactly as the blind judge sees it, for a human rater.
+
+    The run is built WITHOUT an oracle argument, so no oracle field exists to leak, and it renders
+    under the same pinned exclude-all context config the judge reading uses. The rater therefore
+    reads the identical text the judge judged — nothing more.
+    """
+    run = openhands_record_to_agent_run(record)
+    return AgentRunView.from_agent_run(run, context_config=blind_run_context()).to_text()
 
 
 def load_oracle(summary_path: str | Path) -> dict[str, OracleLabel]:

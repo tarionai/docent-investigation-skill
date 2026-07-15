@@ -3,11 +3,13 @@
 A Claude Code plugin marketplace whose `docent-investigation` plugin ships an **`investigation`**
 skill: an end-to-end behavioral investigation pipeline for [Docent](https://docs.transluce.org). It
 ingests real agent runs, authors a rubric for a target failure mode, evaluates it as a blind Docent
-reading (the Analysis Plans surface Docent now recommends), measures flag-frequency, and anchors the
-rubric's labels against a resolution oracle withheld from the judge — so the measurement is
-non-circular by construction. Verdicts key on pre-registered
-decision rules (the reference run returned NOT_SUPPORTED, reported as-is) and recompute offline from
-committed per-run rows.
+reading (the Analysis Plans surface Docent now recommends), measures flag-frequency, and validates
+the measurement from both sides: the rubric's labels are anchored against a resolution oracle
+withheld from the judge (outcome half), and **the judge itself is measured against blind human
+ground-truth labels — precision/recall with Wilson intervals** (instrument half,
+`PRE_REGISTRATION_JUDGE_VALIDATION.md`). Verdicts key on pre-registered decision rules (the
+reference run returned NOT_SUPPORTED, reported as-is) and recompute offline from committed per-run
+rows.
 
 **Worked reference run:** [False-success declaration in SWE-bench Verified agent runs](reports/INVESTIGATION_REPORT.md)
 — the skill applied end to end at N=100 (Nemotron-Nano, OpenHands scaffold).
@@ -62,6 +64,13 @@ The result is reported as a **split verdict** — the two estimands are never co
   declared-success runs across 2 repos (astropy, django) — illustrative, not a population rate.
 - **Association** (are declarations informative about resolution?): descriptive only, deliberately
   **not** part of the verdict (p=0.002, n=66).
+
+**Judge validation (in progress):** the judge's 19 `declared_success` flags are being validated
+against blind human labels of all 100 runs — collected with `scripts/label_runs.py` (the rater sees
+the judge's exact blind view; parity enforced by `tests/test_rater_blindness.py`) and scored offline
+by `scripts/run_judge_validation.py` (judge precision/recall, agreement, Cohen's κ, pre-registered
+precision verdict). Design frozen in `PRE_REGISTRATION_JUDGE_VALIDATION.md` before any label was
+collected.
 
 The resolution oracle is a third-party proxy (not ground truth), and a committed leak canary
 (`tests/test_metadata_canary.py`) proves it never reaches the blind judge — the exclusion is

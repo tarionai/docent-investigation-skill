@@ -39,10 +39,13 @@ your question warrants and say why.
   association, as two separate results. A `NOT_SUPPORTED` primary estimand alongside a significant
   association is a normal, honest outcome — do not round it up to a finding.
 - State the blind spot explicitly: the oracle validates the *outcome* (resolution), not the rubric's
-  label fidelity. Run `fidelity.label_fidelity(rows)` and report it: `judge_self_consistency` is a weak
-  self-consistency sanity check, **not** fidelity; the real measure needs independent human labels
-  (pass `human_labels=` for raw agreement + Cohen's κ) — one rater is a weak bound, two + adjudication
-  is the standard.
+  label fidelity. That half is a study of its own — the judge-validation harness
+  (`docent_investigation.validation`): blind human labels collected under their own pre-registration
+  (`PRE_REGISTRATION_JUDGE_VALIDATION.md`, frozen before any label exists), judge precision/recall
+  with Wilson intervals, and a separate pre-registered verdict on judge precision. The two verdicts —
+  outcome anchor and instrument validation — are never conjoined. `judge_self_consistency` from
+  `fidelity.label_fidelity(rows)` remains only a weak sanity check; one rater is a weak bound, two +
+  adjudication is the standard.
 
 ## Worked example (this repo)
 N=100 OpenHands SWE-bench-Verified runs. Primary estimand: false_success_rate=0.53, Wilson 95% CI

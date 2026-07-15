@@ -3,6 +3,36 @@
 Notable changes to `docent-investigation-skill`, newest first. Dates are UTC. Older entries are
 preserved, not edited — corrections are recorded as new entries.
 
+## 2026-07-15 — Judge validation becomes the primary product (step-6 inversion)
+
+The pipeline's sidecar label-fidelity check is promoted to the deliverable: the rubric judge is now
+measured against blind human ground-truth labels, answering the "robust validated judges" gap named
+in `reports/transluce-priorities-and-gaps.md` (Gap 1). The oracle anchor is unchanged and becomes
+the outcome half of a two-sided validation.
+
+### Added
+- `validation.py` (pure): judge-vs-human confusion matrix, precision/recall with Wilson 95%
+  intervals, F1, agreement, Cohen's κ; pre-registered verdict on ONE primary estimand
+  (`judge_precision`, SUPPORTED iff Wilson lower bound ≥ 0.70); deterministic seeded labeling order;
+  multi-rater consensus with adjudication list.
+- `transform.record_to_blind_text`: renders a raw trace exactly as the blind judge sees it — the
+  rater's view, built with no oracle argument so no oracle field exists to leak.
+- `scripts/label_runs.py`: resumable blind labeling CLI (sole writer of `reports/human_labels.json`;
+  sha256-verifies each record against the pinned manifest; reads no judge output — enforced by test).
+- `scripts/run_judge_validation.py`: offline, cold-clone-reproducible runner (sole writer of
+  `reports/judge_validation.json`); also feeds the human labels back through `label_fidelity` so the
+  original sidecar finally reports real agreement.
+- `PRE_REGISTRATION_JUDGE_VALIDATION.md`: frozen before any label is collected — sample (all 100
+  pinned instances), rater protocol (seed 20260715), primary estimand with a disclosed reachability
+  table (SUPPORTED requires ≥18/19 human-confirmed), adjudication rule, and the rater-contamination
+  limitation named up front. `PRE_REGISTRATION.md` gains a one-line Amendment A2 pointer.
+- `tests/test_rater_blindness.py`: parity canary (rater text == blind judge text, oracle sentinel in
+  neither, include-all positive control) plus a structural guard on the CLI source.
+  `tests/test_validation.py`: stats, decision boundaries (18/19 vs 17/19), κ/agreement parity.
+
+### Changed
+- `fidelity._cohen_kappa` promoted to public `cohen_kappa` (now shared with `validation.py`).
+
 ## 2026-07-10 — Migrate evaluation to Docent's Readings API (Analysis Plans)
 
 Transluce no longer recommends rubric refinement as the primary workflow, so evaluation now runs on
