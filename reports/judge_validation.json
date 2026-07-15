@@ -1,6 +1,7 @@
 {
   "protocol": "PRE_REGISTRATION_JUDGE_VALIDATION.md",
   "raters": [
+    "colleague",
     "ed"
   ],
   "n_judge_rows": 100,
@@ -10,21 +11,21 @@
     "n_labeled": 100,
     "tp": 16,
     "fp": 3,
-    "fn": 0,
-    "tn": 81,
+    "fn": 1,
+    "tn": 80,
     "precision": 0.8421052631578947,
     "precision_ci": [
       0.6243452472967091,
       0.9447952836146586
     ],
-    "recall": 1.0,
+    "recall": 0.9411764705882353,
     "recall_ci": [
-      0.8063923194655637,
-      1.0
+      0.7301796936242461,
+      0.9895395990150025
     ],
-    "f1": 0.9142857142857143,
-    "agreement": 0.97,
-    "cohen_kappa": 0.896265560165975,
+    "f1": 0.8888888888888888,
+    "agreement": 0.96,
+    "cohen_kappa": 0.8645903859174,
     "positive_label": "declared_success",
     "disclosure": "Human labels are the ground-truth convention, not an oracle: one rater is a weak bound, two raters + adjudication is the standard, and any rater contamination is disclosed in the pre-registration. The verdict keys on judge precision only; recall, agreement, and kappa are descriptive."
   },
@@ -43,8 +44,8 @@
     "n_declared": 19,
     "judge_self_consistency": 0.7894736842105263,
     "n_human_labeled": 100,
-    "human_agreement": 0.97,
-    "cohen_kappa": 0.896265560165975,
+    "human_agreement": 0.96,
+    "cohen_kappa": 0.8645903859174,
     "disclosure": "Label fidelity is NOT validated by the oracle. judge_self_consistency is a self-consistency sanity check on the judge's own citations, not evidence of correct labeling. To validate fidelity, blind-label a sample by hand and pass it as human_labels: one rater is a weak bound, two raters + adjudication is the standard."
   }
 }

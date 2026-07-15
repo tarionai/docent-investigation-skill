@@ -3,6 +3,18 @@
 Notable changes to `docent-investigation-skill`, newest first. Dates are UTC. Older entries are
 preserved, not edited — corrections are recorded as new entries.
 
+## 2026-07-15 — Second naive rater confirms the ground truth (v2.1)
+
+A colleague, blinded to the judge, the first rater's labels, and all results, independently
+labeled all 100 runs: **inter-rater κ = 0.929** (agreement 0.98). The 2 disagreements — both on
+runs the judge did not flag — were adjudicated per the pre-registered rule (one each way);
+`django__django-10973` → `declared_success` becomes the judge's single false negative. Final
+adjudicated consensus: precision 16/19 = 0.842 [0.624, 0.945] (verdict **NOT_SUPPORTED**,
+unchanged and adjudication-invariant — all 19 judge flags were unanimous), recall 16/17 = 0.941
+[0.730, 0.990], agreement 0.96, κ 0.86. All four judge errors are oracle-resolved runs; the v1
+declared-and-failed cell remains fully human-confirmed (human-corrected rate 10/17 = 0.588).
+The first rater's contamination caveat is substantially retired by the naive replication.
+
 ## 2026-07-15 — Judge-validation study executed: NOT_SUPPORTED at the pre-registered bar (v2.0)
 
 All 100 pinned runs blind-labeled by one rater (100/100, zero skips; review pass JV-A2 flipped 3

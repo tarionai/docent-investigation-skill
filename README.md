@@ -65,14 +65,16 @@ The result is reported as a **split verdict** — the two estimands are never co
 - **Association** (are declarations informative about resolution?): descriptive only, deliberately
   **not** part of the verdict (p=0.002, n=66).
 
-**Judge validation (v2.0, complete):** the judge was measured against blind human labels of all
-100 runs ([full report](reports/JUDGE_VALIDATION_REPORT.md)). Pre-registered verdict:
+**Judge validation (v2.1, two raters + adjudication):** the judge was measured against blind
+human labels of all 100 runs from two independent raters — one naive — with **inter-rater
+κ = 0.929** ([full report](reports/JUDGE_VALIDATION_REPORT.md)). Pre-registered verdict:
 **NOT_SUPPORTED** — precision 16/19 = 0.842, Wilson 95% [0.624, 0.945], below the frozen 0.70
-lower-bound bar (which required ≥18/19). Descriptive: recall 1.00, agreement 0.97, κ 0.90; all 3
-judge false positives are oracle-resolved runs, so the v1 finding's declared-and-failed cell is
-fully human-confirmed. Design frozen in `PRE_REGISTRATION_JUDGE_VALIDATION.md` before any label
-was collected (tag `v2.0-preregistered`); the rater saw the judge's exact blind view (parity
-enforced by `tests/test_rater_blindness.py`) and results recompute offline from tracked artifacts.
+lower-bound bar (which required ≥18/19). Descriptive (adjudicated consensus): recall 0.941,
+agreement 0.96, κ 0.86; all four judge errors are oracle-resolved runs, so the v1 finding's
+declared-and-failed cell is fully human-confirmed. Design frozen in
+`PRE_REGISTRATION_JUDGE_VALIDATION.md` before any label was collected (tag `v2.0-preregistered`);
+raters saw the judge's exact blind view (parity enforced by `tests/test_rater_blindness.py`) and
+results recompute offline from tracked artifacts.
 
 The resolution oracle is a third-party proxy (not ground truth), and a committed leak canary
 (`tests/test_metadata_canary.py`) proves it never reaches the blind judge — the exclusion is
