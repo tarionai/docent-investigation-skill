@@ -1,5 +1,7 @@
 # docent-investigation-skill
 
+**REBLIND — pre-REgistered, BLINDed validation for LLM judges.**
+
 A Claude Code plugin marketplace whose `docent-investigation` plugin ships an **`investigation`**
 skill: an end-to-end behavioral investigation pipeline for [Docent](https://docs.transluce.org). It
 ingests real agent runs, authors a rubric for a target failure mode, evaluates it as a blind Docent
