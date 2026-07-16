@@ -232,8 +232,9 @@ corpus and the bars change.
 All artifacts are public: `github.com/tarionai/docent-investigation-skill`. Both design freezes
 are commit-order-provable: the Study 1 registration commit predates the batch results, and tag
 `v2.0-preregistered` predates the first commit touching human labels. Every reported statistic
-recomputes offline: `uv run pytest -q` (68 tests, 67 of them offline including the blinding
-canaries and the rater-parity proof; the one live-API canary skips without credentials) and
+recomputes offline: `uv run pytest -q` (the offline suite — including the blinding canaries and
+the rater-parity proof — passes in full; the only skips are a live-API canary without
+credentials and a check gated on a local corpus file) and
 `uv run python scripts/run_judge_validation.py` (no network, no LLM).
 
 ---
@@ -249,7 +250,9 @@ canaries and the rater-parity proof; the one live-API canary skips without crede
   exactly; both design freezes confirmed by commit ancestry (c943b95 → batch results;
   83f1589/v2.0-preregistered → first human label, 14:40 vs 15:09 UTC); test suite recounted at
   68 collected / 67 pass / 1 credential-gated skip; Study 1 reframed as descriptive per
-  `PRE_REGISTRATION.md` Amendment A1's own downgrade language.*
+  `PRE_REGISTRATION.md` Amendment A1's own downgrade language. Cold-clone rehearsal later that
+  day found pytest undeclared (fixed: dev dependency) and the count already stale after step-4
+  tests landed (74/72/2, second skip corpus-gated) — Availability wording made count-invariant.*
 - *Bibliography: all arXiv IDs/URLs verified via search 2026-07-15 and re-verified 2026-07-16
   against landing pages. Corrections applied 2026-07-16: the Docent false-positives quote lives
   in "Introducing Docent" (Mar 2025), not "Open-sourcing Docent"; MALT is 10,919 transcripts of

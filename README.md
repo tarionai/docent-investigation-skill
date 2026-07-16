@@ -45,7 +45,7 @@ docs/plans/                              # implementation plan + bounded node pr
 
 ```
 python tools/plugin_sanity.py
-python -m pytest -q
+uv run pytest -q
 ```
 
 ## Status
