@@ -196,3 +196,30 @@ Any deviation discovered mid-run (an ingest failure, an errored verdict subset, 
 is recorded as a dated amendment in this file BEFORE any recall statistic or delta is computed or
 seen; errored verdicts are reported as coverage, never imputed. No amendment may alter the rubric
 text, judge tier, schema, mapper, recovery definition, decision rule, or gate.
+
+## Amendment S4-A1 (2026-07-16, mid-run — platform quota exhausted at the mapper step; zero recall statistics computed)
+
+**What happened.** The live run executed in order: leak canary **passed**; 229 runs ingested into
+fresh private collection `d3b3dfff-6b01-408b-bfb8-0065d1a5ea04`; the frozen policy reading
+(`35ce631a-a1a1-4b52-80b1-b554aadf8ca2`, plan `142e1c10…`) **completed** — 229 results, 228 valid
+verdicts, 1 result errored with a transient provider fault (`"The model failed to respond"`),
+not quota. The frozen mapper step then failed wholesale: **all 157 mapper calls** returned
+`docent_usage_limit` (*"Free weekly usage limit reached. Add your own API key in settings…"*) —
+the account's free weekly LLM budget was exhausted by the policy reading. The orchestration
+script aborted before scoring.
+
+**What was and was not seen.** No recall statistic, no per-positive outcome, and no delta has
+been computed or seen. Aggregate counts were visible in orchestration logs (228 verdicts, 157
+flags — noting 157 > the frozen 135-flag gate, an observation recorded here without
+interpretation). The SDK's own logging echoed a few truncated flag explanations into the
+orchestration transcript; per the standing EA-A2 rule this is disclosed as a potential
+pre-exposure channel for any future adjudication of step-4 extras (the affected haystack ids are
+unknown — the log lines are unattributed).
+
+**Resolution (no instrument change).** Once quota is restored (owner adds a personal API key in
+Docent settings, or the weekly limit resets): resume on the SAME collection with the identical
+frozen instrument — the policy reading is consumed via its content-addressed id (a cache-resume
+retry of the single transiently-errored result is permitted by the frozen design; if it still
+fails, coverage is 228/229 and the affected run is reported as coverage, never imputed), and the
+mapper — which never produced a single output — is re-submitted unchanged. Nothing about the
+rubric, judge tier, schema, mapper, recovery definition, decision rule, or gate is altered.
